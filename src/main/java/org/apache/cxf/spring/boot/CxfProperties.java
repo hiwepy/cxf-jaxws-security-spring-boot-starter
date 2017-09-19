@@ -7,8 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.lmax.disruptor.spring.boot.config.EventHandlerDefinition;
 
-@ConfigurationProperties(DisruptorProperties.PREFIX)
-public class DisruptorProperties {
+@ConfigurationProperties(CxfProperties.PREFIX)
+public class CxfProperties {
 
 	public static final String PREFIX = "spring.disruptor";
 
