@@ -92,9 +92,7 @@
 					</exclusion>
 					<exclusion>
 						<groupId>org.apache.geronimo.specs</groupId>
-						<artifactId>
-							geronimo-activation_1.1_spec
-						</artifactId>
+						<artifactId>geronimo-activation_1.1_spec</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -476,6 +474,14 @@
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
 					<artifactId>cxf-rt-security-saml</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.wss4j</groupId>
+					<artifactId>wss4j-ws-security-dom</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.wss4j</groupId>
+					<artifactId>wss4j-ws-security-common</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
