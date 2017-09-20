@@ -9,6 +9,7 @@ import javax.xml.ws.Endpoint;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.rs.security.oauth2.grants.code.EHCacheCodeDataProvider;
@@ -81,8 +82,28 @@ public class CxfAutoConfiguration implements ApplicationContextAware {
 		for (APIEndpoint apiEndpoint : apiEndpoints) {
 			
 			
-			Endpoint endpoint = new EndpointImpl(bus, commonService);
+			EndpointImpl endpoint = new EndpointImpl(bus, commonService);
 			endpoint.publish("/CommonService");
+			
+			endpoint.getHandlers().add(e)
+			
+			endpoint.getInInterceptors().add(new LoggingInInterceptor());
+			
+			endpoint.getOutInterceptors().add(e);
+			
+			/*<jaxws:endpoint id="syncUserService"
+		        implementor="com.test.inf.testServiceImpl " address="/testInf">
+		        <jaxws:inInterceptors>
+		            <bean name="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+		            <bean name="webLogInInterceptor" class="com.test.inf.WebLogInInterceptor" />
+		        </jaxws:inInterceptors>
+		        <jaxws:outInterceptors>
+		            <bean name="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
+		            <bean name="webLogOutInterceptor" class="com.test.inf.WebLogOutInterceptor" />
+		        </jaxws:outInterceptors>
+		    </jaxws:endpoint>
+		    */
+		    
 			
 			endpoints.add(endpoint);
 		}
