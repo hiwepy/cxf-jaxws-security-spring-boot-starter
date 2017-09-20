@@ -1,3 +1,4 @@
+package org.apache.cxf.spring.boot;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
