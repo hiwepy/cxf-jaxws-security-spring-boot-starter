@@ -1,8 +1,4 @@
 package org.apache.cxf.spring.boot;
-/**
- * <p>Coyright (R) 2014 正方软件股份有限公司。<p>
- */
-
 
 import org.apache.cxf.binding.soap.SoapMessage;  
 import org.apache.cxf.headers.Header;  
