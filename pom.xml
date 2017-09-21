@@ -327,6 +327,61 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/cn.wensiqun/asmsupport-core 
+		<table>
+			<thead>
+				<tr>
+					<th align="left">模块</th>
+					<th align="left">描述</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td align="left">asmsupport-thrid</td>
+					<td align="left">这个模块的包含了asmsupport使用的第三方依赖包的源码，这些源码在asmsupport中都重新定义了命名空间，这样的好处就是实现零依赖，同时在开发过程中避免了因为使用asmsupport而产生包冲突</td>
+				</tr>
+				<tr>
+					<td align="left">asmsupport-standard</td>
+					<td align="left">这个模块是asmsupport的标准，可以基于这个api标准完成一个新的asmsupport的实现</td>
+				</tr>
+				<tr>
+					<td align="left">asmsupport-core</td>
+					<td align="left">这个模块是asmsupport-standard的一个核心实现</td>
+				</tr>
+				<tr>
+					<td align="left">asmsupport-client</td>
+					<td align="left">这个模块是对asmsupport-core的一个高层封装，实现了很多简便的方式，比如链式调用，同时也实现了asmsupport-standard标准.</td>
+				</tr>
+				<tr>
+					<td align="left">asmsupport-grammar</td>
+					<td align="left">这个模块是支持对java语法直接编译。</td>
+				</tr>
+				<tr>
+					<td align="left">asmsupport-issues</td>
+					<td align="left">这个模块包含了所有asmsupport以往的issue的测试类，这个包的作用可以在后续开发中确保运行'maven test'的时候同一问题不再出现。</td>
+				</tr>
+				<tr>
+					<td align="left">asmsupport-sample</td>
+					<td align="left">这个模块包含了一些asmsupport的实例, 比如动态代理，json序列化等等.</td>
+				</tr>
+				<tr>
+					<td align="left">asmsupport-lesson</td>
+					<td align="left">这个模块包含了一些asmsupport基本教程实例.</td>
+				</tr>
+			</tbody>
+		</table>
+		-->
+		<dependency>
+		   <groupId>cn.wensiqun</groupId>
+    		<artifactId>asmsupport-client</artifactId>
+		    <version>0.4.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>cn.wensiqun</groupId>
+		    <artifactId>classgrep</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
 		<dependency>
 		    <groupId>org.javassist</groupId>
