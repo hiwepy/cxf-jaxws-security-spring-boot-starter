@@ -21,15 +21,16 @@ public class CtClassJaxrsApiBuilder implements Builder<CtClass> {
 	// 构建动态类
 	private CtClass ctclass  = null;
 	
-	public CtClassJaxrsApiBuilder(final String classname) {
-		try {
-			this.ctclass = pool.get(classname);
-		} catch (NotFoundException e) {
+	public CtClassJaxrsApiBuilder(final String classname) throws NotFoundException {
+		this.ctclass = pool.getOrNull(classname);
+		if( null == this.ctclass) {
 			this.ctclass = pool.makeClass(classname);
 		}
 	}
 	
 	public CtClassJaxrsApiBuilder method(String apiname) throws NotFoundException, CannotCompileException {
+		
+		
 		
 		
 		// 创建方法  

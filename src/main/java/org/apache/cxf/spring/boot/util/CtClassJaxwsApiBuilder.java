@@ -22,9 +22,8 @@ public class CtClassJaxwsApiBuilder implements Builder<CtClass> {
 	private CtClass ctclass  = null;
 	
 	public CtClassJaxwsApiBuilder(final String classname) {
-		try {
-			this.ctclass = pool.get(classname);
-		} catch (NotFoundException e) {
+		this.ctclass = pool.getOrNull(classname);
+		if( null == this.ctclass) {
 			this.ctclass = pool.makeClass(classname);
 		}
 	}

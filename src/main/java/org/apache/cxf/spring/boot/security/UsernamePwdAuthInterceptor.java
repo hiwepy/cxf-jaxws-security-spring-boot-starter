@@ -1,7 +1,4 @@
-/**
- * <p>Coyright (R) 2014 正方软件股份有限公司。<p>
- */
-package org.apache.cxf.spring.boot.security.oauth2;
+package org.apache.cxf.spring.boot.security;
 
 import org.apache.cxf.binding.soap.SoapMessage;  
 import org.apache.cxf.binding.soap.saaj.SAAJInInterceptor;  
@@ -16,14 +13,15 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPHeader;  
 import javax.xml.soap.SOAPMessage;  
   
-public class AuthInterceptor extends AbstractPhaseInterceptor<SoapMessage>{  
-    private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);  
-    private SAAJInInterceptor saa = new SAAJInInterceptor();  
+public class UsernamePwdAuthInterceptor extends AbstractPhaseInterceptor<SoapMessage>{  
+    
+	private static final Logger LOG = LoggerFactory.getLogger(UsernamePwdAuthInterceptor.class);  
+    private SAAJInInterceptor saa = new SAAJInInterceptor(); 
   
     private static final String USER_NAME = "admin";  
     private static final String USER_PASSWORD = "pass";  
   
-    public AuthInterceptor() {  
+    public UsernamePwdAuthInterceptor() {  
         super(Phase.PRE_PROTOCOL);  
         getAfter().add(SAAJInInterceptor.class.getName());  
     }  
@@ -39,7 +37,7 @@ public class AuthInterceptor extends AbstractPhaseInterceptor<SoapMessage>{
         try {  
             head = mess.getSOAPHeader();  
         } catch (Exception e) {  
-            logger.error("getSOAPHeader error: {}",e.getMessage(),e);  
+            LOG.error("getSOAPHeader error: {}",e.getMessage(),e);  
         }  
         if (head == null) {  
             throw new Fault(new IllegalArgumentException("找不到Header，无法验证用户信息"));  
@@ -57,10 +55,10 @@ public class AuthInterceptor extends AbstractPhaseInterceptor<SoapMessage>{
         String userName = users.item(0).getTextContent().trim();  
         String password = passwords.item(0).getTextContent().trim();  
         if(USER_NAME.equals(userName) && USER_PASSWORD.equals(password)){  
-            logger.debug("admin auth success");  
+            LOG.debug("admin auth success");  
         } else {  
             SOAPException soapExc = new SOAPException("认证错误");  
-            logger.debug("admin auth failed");  
+            LOG.debug("admin auth failed");  
             throw new Fault(soapExc);  
         }  
     }  

@@ -1,16 +1,13 @@
 package org.apache.cxf.spring.boot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
-import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
-import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.rs.security.oauth2.grants.code.EHCacheCodeDataProvider;
 import org.apache.cxf.rs.security.oauth2.provider.DefaultEHCacheOAuthDataProvider;
@@ -21,8 +18,12 @@ import org.apache.cxf.spring.boot.endpoint.APIEndpointHandler;
 import org.apache.cxf.spring.boot.endpoint.DefaultAPIEndpointHandler;
 import org.apache.cxf.spring.boot.repository.APIEndpoint;
 import org.apache.cxf.spring.boot.repository.APIEndpointRepository;
+import org.apache.cxf.spring.boot.security.UsernamePwdAuthInterceptor;
+import org.apache.cxf.spring.boot.util.CtClassJaxwsApiBuilder;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
+import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -36,6 +37,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+
 //http://cxf.apache.org/docs/springboot.html
 
 @Configuration
@@ -47,6 +51,7 @@ import org.springframework.context.annotation.Configuration;
         "org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration", // Spring Boot 1.x
         "org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration" // Spring Boot 2.x
 })
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CxfAutoConfiguration implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
@@ -73,42 +78,48 @@ public class CxfAutoConfiguration implements ApplicationContextAware {
 		return new APIEndpointClassLoader(handler, apiEndpoints);
 	}
 	
-	/** JAX-WS **/
+	/** JAX-WS 
+	 * 
+	 * 
+	 * // 销毁指定的Ws
+	 *	ServerImpl server = endpoint.getServer(addr);
+	 *	server.destroy();
+	 * 
+	 */
 	@Bean
-	public List<Endpoint> endpoints(APIEndpointClassLoader endpointClassLoader, List<APIEndpoint> apiEndpoints) {
+	public Map<String,Endpoint> endpoints(APIEndpointClassLoader endpointClassLoader, List<APIEndpoint> apiEndpoints) {
 		
-		List<Endpoint> endpoints = new ArrayList<Endpoint>();
+		Map<String, Endpoint> endpointMap = new HashMap<String, Endpoint>();
 		
 		for (APIEndpoint apiEndpoint : apiEndpoints) {
+			// 动态创建、发布 Ws
+			try {
+				
+				Class jaxwsApiClass = new CtClassJaxwsApiBuilder("JaxwsApi" + apiEndpoint.getName()).method("HelloWoldService2").build().toClass();
+				
+				EndpointImpl endpoint = new EndpointImpl(bus, BeanUtils.instantiateClass(jaxwsApiClass));
+				
+				//接口发布在 addr 目录下
+				endpoint.publish(apiEndpoint.getAddr());
+				
+				endpoint.getInInterceptors().add(new UsernamePwdAuthInterceptor());
+
+				endpointMap.put(apiEndpoint.getAddr(), endpoint);
+				
+			} catch (BeanInstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CannotCompileException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			
-			EndpointImpl endpoint = new EndpointImpl(bus, commonService);
-			endpoint.publish("/CommonService");
-			
-			endpoint.getHandlers().add(e)
-			
-			endpoint.getInInterceptors().add(new LoggingInInterceptor());
-			
-			endpoint.getOutInterceptors().add(e);
-			
-			/*<jaxws:endpoint id="syncUserService"
-		        implementor="com.test.inf.testServiceImpl " address="/testInf">
-		        <jaxws:inInterceptors>
-		            <bean name="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
-		            <bean name="webLogInInterceptor" class="com.test.inf.WebLogInInterceptor" />
-		        </jaxws:inInterceptors>
-		        <jaxws:outInterceptors>
-		            <bean name="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
-		            <bean name="webLogOutInterceptor" class="com.test.inf.WebLogOutInterceptor" />
-		        </jaxws:outInterceptors>
-		    </jaxws:endpoint>
-		    */
-		    
-			
-			endpoints.add(endpoint);
 		}
 		
-		return endpoints;
+		return endpointMap;
 	}
 	
 	/*

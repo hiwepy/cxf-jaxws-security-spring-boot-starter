@@ -21,12 +21,21 @@ import java.io.Serializable;
 public class APIEndpoint implements Serializable {
 
 	private String name;
+	
+	private String targetNamespace;
 
-	private byte[] bytes;
+	private String serviceName;
+	
+	private String portName;
+	
+	private String wsdlLocation;
+	
+	private String endpointInterface;
+	
+	private String addr;
 
-	public APIEndpoint(String name, byte[] bytes) {
+	public APIEndpoint(String name) {
 		this.name = name;
-		this.bytes = bytes;
 	}
 
 	public String getName() {
@@ -37,12 +46,55 @@ public class APIEndpoint implements Serializable {
 		this.name = name;
 	}
 
-	public byte[] getBytes() {
-		return bytes;
+	public String getTargetNamespace() {
+		return targetNamespace;
 	}
 
-	public void setBytes(byte[] bytes) {
-		this.bytes = bytes;
+	public void setTargetNamespace(String targetNamespace) {
+		this.targetNamespace = targetNamespace;
 	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+	public String getPortName() {
+		return portName;
+	}
+
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+
+	public String getWsdlLocation() {
+		return wsdlLocation;
+	}
+
+	public void setWsdlLocation(String wsdlLocation) {
+		this.wsdlLocation = wsdlLocation;
+	}
+
+	public String getEndpointInterface() {
+		return endpointInterface;
+	}
+
+	public void setEndpointInterface(String endpointInterface) {
+		this.endpointInterface = endpointInterface;
+	}
+
+	public String getAddr() {
+		return addr;
+	}
+
+	public void setAddr(String addr) {
+		this.addr = addr;
+	}
+
+	
+	
 
 }
