@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.cxf.spring.boot.repository;
+package org.apache.cxf.spring.boot.endpoint;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.zfsoft.ws.cxf.security.oauth2;
+package org.apache.cxf.spring.boot.security.oauth2;
 
 import java.util.List;
 
@@ -34,8 +34,6 @@ public class BearerOAuthDataProvider implements AuthorizationCodeDataProvider {
         token.setSubject(reg.getSubject());
         token.setGrantType(reg.getGrantType());
          
-        // persist or encrypt and return
- 
         return token;
    }
 

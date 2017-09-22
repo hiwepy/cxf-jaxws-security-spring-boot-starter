@@ -13,11 +13,8 @@ import org.apache.cxf.rs.security.oauth2.grants.code.EHCacheCodeDataProvider;
 import org.apache.cxf.rs.security.oauth2.provider.DefaultEHCacheOAuthDataProvider;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthDataProvider;
 import org.apache.cxf.rs.security.oauth2.services.AccessTokenService;
-import org.apache.cxf.spring.boot.endpoint.APIEndpointClassLoader;
-import org.apache.cxf.spring.boot.endpoint.APIEndpointHandler;
-import org.apache.cxf.spring.boot.endpoint.DefaultAPIEndpointHandler;
-import org.apache.cxf.spring.boot.repository.APIEndpoint;
-import org.apache.cxf.spring.boot.repository.APIEndpointRepository;
+import org.apache.cxf.spring.boot.endpoint.APIEndpoint;
+import org.apache.cxf.spring.boot.endpoint.APIEndpointRepository;
 import org.apache.cxf.spring.boot.security.UsernamePwdAuthInterceptor;
 import org.apache.cxf.spring.boot.util.CtClassJaxwsApiBuilder;
 import org.apache.cxf.transport.servlet.CXFServlet;
@@ -67,19 +64,8 @@ public class CxfAutoConfiguration implements ApplicationContextAware {
 		return getEndpointRepository().getEndpoints();
 	}
 	
-	@Bean
-	@ConditionalOnMissingBean
-	public APIEndpointHandler endpointHandler() {
-		return new DefaultAPIEndpointHandler();
-	}
-	
-	@Bean
-	public APIEndpointClassLoader endpointClassLoader(APIEndpointHandler handler, List<APIEndpoint> apiEndpoints) {
-		return new APIEndpointClassLoader(handler, apiEndpoints);
-	}
-	
-	/** JAX-WS 
-	 * 
+	/** 
+	 * JAX-WS 
 	 * 
 	 * // 销毁指定的Ws
 	 *	ServerImpl server = endpoint.getServer(addr);
@@ -87,7 +73,7 @@ public class CxfAutoConfiguration implements ApplicationContextAware {
 	 * 
 	 */
 	@Bean
-	public Map<String,Endpoint> endpoints(APIEndpointClassLoader endpointClassLoader, List<APIEndpoint> apiEndpoints) {
+	public Map<String,Endpoint> endpoints(List<APIEndpoint> apiEndpoints) {
 		
 		Map<String, Endpoint> endpointMap = new HashMap<String, Endpoint>();
 		

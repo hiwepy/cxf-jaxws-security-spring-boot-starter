@@ -50,11 +50,11 @@ public class CtClassJaxwsApiBuilder_Test {
 		 * 2、参数名称
 		 * 
 		 */
+		/* 
 		byte[] byteArr = ctClass.toBytecode();
-		 
 		FileOutputStream out = new FileOutputStream(new File("D://FirstCaseV2.class"));
 		IOUtils.copy(byteArr, out);
-		IOUtils.closeOutput(out);
+		IOUtils.closeOutput(out);*/
 		
 	}
 
