@@ -72,7 +72,7 @@ public class CxfAutoConfiguration implements ApplicationContextAware {
 	 *	server.destroy();
 	 * 
 	 */
-	@Bean
+	@Bean("endpointMap")
 	public Map<String,Endpoint> endpoints(List<APIEndpoint> apiEndpoints) {
 		
 		Map<String, Endpoint> endpointMap = new HashMap<String, Endpoint>();
