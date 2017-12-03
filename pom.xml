@@ -4,15 +4,40 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.github.vindell</groupId>
-		<artifactId>spring-boot-extend-starters</artifactId>
-		<version>1.5.8-SNAPSHOT</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.9.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	
+
+	<groupId>com.github.vindell</groupId>
 	<artifactId>spring-boot-starter-cxf</artifactId>
-	<name>Spring Boot CXF Biz Starter</name>
-	<description>Starter for CXF</description>
-	
+	<version>1.5.9-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>spring-boot-starter-cxf</name>
+	<url>https://github.com/vindell/spring-boot-starter-cxf</url>
+	<description>starter for cxf client</description>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/vindell/spring-boot-starter-cxf</url>
+		<connection>scm:git:git://github.com/vindell/spring-boot-starter-cxf.git</connection>
+		<developerConnection>scm:git:git@github.com/vindell/spring-boot-starter-cxf.git</developerConnection>
+	</scm>
+
+	<properties>
+		<cxf.version>3.2.1</cxf.version>
+		<cxf-starter.version>3.2.1</cxf-starter.version>
+	</properties>
+
 	<dependencies>
 
 		<!-- Java Servlet API -->
@@ -27,70 +52,38 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-log4j12</artifactId>
-		    <scope>test</scope>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/cn.wensiqun/asmsupport-core 
-		<table>
-			<thead>
-				<tr>
-					<th align="left">模块</th>
-					<th align="left">描述</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td align="left">asmsupport-thrid</td>
-					<td align="left">这个模块的包含了asmsupport使用的第三方依赖包的源码，这些源码在asmsupport中都重新定义了命名空间，这样的好处就是实现零依赖，同时在开发过程中避免了因为使用asmsupport而产生包冲突</td>
-				</tr>
-				<tr>
-					<td align="left">asmsupport-standard</td>
-					<td align="left">这个模块是asmsupport的标准，可以基于这个api标准完成一个新的asmsupport的实现</td>
-				</tr>
-				<tr>
-					<td align="left">asmsupport-core</td>
-					<td align="left">这个模块是asmsupport-standard的一个核心实现</td>
-				</tr>
-				<tr>
-					<td align="left">asmsupport-client</td>
-					<td align="left">这个模块是对asmsupport-core的一个高层封装，实现了很多简便的方式，比如链式调用，同时也实现了asmsupport-standard标准.</td>
-				</tr>
-				<tr>
-					<td align="left">asmsupport-grammar</td>
-					<td align="left">这个模块是支持对java语法直接编译。</td>
-				</tr>
-				<tr>
-					<td align="left">asmsupport-issues</td>
-					<td align="left">这个模块包含了所有asmsupport以往的issue的测试类，这个包的作用可以在后续开发中确保运行'maven test'的时候同一问题不再出现。</td>
-				</tr>
-				<tr>
-					<td align="left">asmsupport-sample</td>
-					<td align="left">这个模块包含了一些asmsupport的实例, 比如动态代理，json序列化等等.</td>
-				</tr>
-				<tr>
-					<td align="left">asmsupport-lesson</td>
-					<td align="left">这个模块包含了一些asmsupport基本教程实例.</td>
-				</tr>
-			</tbody>
-		</table>
-		-->
+
+		<!-- https://mvnrepository.com/artifact/cn.wensiqun/asmsupport-core <table> 
+			<thead> <tr> <th align="left">模块</th> <th align="left">描述</th> </tr> </thead> 
+			<tbody> <tr> <td align="left">asmsupport-thrid</td> <td align="left">这个模块的包含了asmsupport使用的第三方依赖包的源码，这些源码在asmsupport中都重新定义了命名空间，这样的好处就是实现零依赖，同时在开发过程中避免了因为使用asmsupport而产生包冲突</td> 
+			</tr> <tr> <td align="left">asmsupport-standard</td> <td align="left">这个模块是asmsupport的标准，可以基于这个api标准完成一个新的asmsupport的实现</td> 
+			</tr> <tr> <td align="left">asmsupport-core</td> <td align="left">这个模块是asmsupport-standard的一个核心实现</td> 
+			</tr> <tr> <td align="left">asmsupport-client</td> <td align="left">这个模块是对asmsupport-core的一个高层封装，实现了很多简便的方式，比如链式调用，同时也实现了asmsupport-standard标准.</td> 
+			</tr> <tr> <td align="left">asmsupport-grammar</td> <td align="left">这个模块是支持对java语法直接编译。</td> 
+			</tr> <tr> <td align="left">asmsupport-issues</td> <td align="left">这个模块包含了所有asmsupport以往的issue的测试类，这个包的作用可以在后续开发中确保运行'maven 
+			test'的时候同一问题不再出现。</td> </tr> <tr> <td align="left">asmsupport-sample</td> 
+			<td align="left">这个模块包含了一些asmsupport的实例, 比如动态代理，json序列化等等.</td> </tr> <tr> 
+			<td align="left">asmsupport-lesson</td> <td align="left">这个模块包含了一些asmsupport基本教程实例.</td> 
+			</tr> </tbody> </table> -->
 		<dependency>
-		   <groupId>cn.wensiqun</groupId>
-    		<artifactId>asmsupport-client</artifactId>
-		    <version>0.4.3</version>
+			<groupId>cn.wensiqun</groupId>
+			<artifactId>asmsupport-client</artifactId>
+			<version>0.4.3</version>
 		</dependency>
 		<dependency>
-		    <groupId>cn.wensiqun</groupId>
-		    <artifactId>classgrep</artifactId>
-		    <version>1.1.1</version>
+			<groupId>cn.wensiqun</groupId>
+			<artifactId>classgrep</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
 		<dependency>
-		    <groupId>org.javassist</groupId>
-		    <artifactId>javassist</artifactId>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
 		</dependency>
 
 		<!-- Core starter, including auto-configuration support, logging and YAML -->
@@ -121,17 +114,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-autoconfigure</artifactId>
 		</dependency>
-		
+
 		<!-- CXF webservice -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+			<version>${cxf-starter.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.cxf</groupId>
-		    <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+			<version>${cxf-starter.version}</version>
 		</dependency>
-		
+
 		<!-- http://mvnrepository.com/artifact/org.apache.cxf -->
 		<!-- Apache CXF 是一个开源的 Services 框架，CXF 帮助您利用 Frontend 编程 API 来构建和开发 Services 
 			，像 JAX-WS 。 这些 Services 可以支持多种协议，比如：SOAP、XML/HTTP、RESTful HTTP 或者 CORBA ， 
@@ -405,13 +400,14 @@
 			<artifactId>cxf-xerces-xsd-validation</artifactId>
 			<version>2.7.15</version>
 		</dependency>
-		
-		
+
+
 		<!-- CXF webservice -->
-		 
+
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-core</artifactId>
+			<version>${cxf.version}</version>
 		</dependency>
 		<!-- <dependency> <groupId>org.apache.cxf</groupId> <artifactId>cxf-rt-core</artifactId> 
 			<exclusions> <exclusion> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId> 
@@ -421,6 +417,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>asm</artifactId>
@@ -435,6 +432,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -450,6 +448,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-simple</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -461,6 +460,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -471,11 +471,13 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http-jetty</artifactId>
+			<version>${cxf.version}</version>
 		</dependency>
 		<!-- cxf-rt-ws -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-ws-addr</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -488,6 +490,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-ws-policy</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -500,10 +503,12 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-security</artifactId>
+			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-ws-security</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -524,6 +529,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-rs-security-oauth2</artifactId>
+			<version>${cxf.version}</version>
 		</dependency>
 		<!-- <dependency> <groupId>org.apache.cxf</groupId> <artifactId>cxf-rt-rs-security-cors</artifactId> 
 			</dependency> <dependency> <groupId>org.apache.cxf</groupId> <artifactId>cxf-rt-rs-security-sso-saml</artifactId> 
@@ -532,6 +538,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-soap</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -542,6 +549,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-xml</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.cxf</groupId>
@@ -553,6 +561,7 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-databinding-jaxb</artifactId>
+			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.xml.stream</groupId>
@@ -575,4 +584,192 @@
 
 	</dependencies>
 	
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- 编译插件：编译主代码至主输出目录 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<!-- 设置源文件编码方式 -->
+					<configuration>
+						<defaultLibBundleDir>lib</defaultLibBundleDir>
+						<!-- 源代码编译版本 -->
+						<source>${java.version}</source>
+						<!-- 目标平台编译版本 -->
+						<target>${java.version}</target>
+						<!-- 字符集编码 -->
+						<encoding>${project.build.sourceEncoding}</encoding>
+						<!-- -->
+						<maxmem>512M</maxmem>
+					</configuration>
+				</plugin>
+				<!-- 资源插件：复制主资源文件至主输出目录 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<!-- 解决资源文件的编码问题 -->
+					<configuration>
+						<!-- 字符集编码 -->
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+					<!-- 复制测试资源文件至测试输出目录复制resources到test-classess -->
+					<executions>
+						<execution>
+							<id>copy-resources</id>
+							<phase>validate</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${basedir}/target/test-classes</outputDirectory>
+								<resources>
+									<resource>
+										<directory>src/main/resources</directory>
+										<!--<filtering>true</filtering> -->
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.shared</groupId>
+							<artifactId>maven-filtering</artifactId>
+							<version>1.3</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<!-- 单元测试插件 ：执行测试用例 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<configuration>
+						<!-- 跳过单元测试 -->
+						<skip>true</skip>
+						<skipTests>true</skipTests>
+						<!-- forkMode 可设置值有 “never”， “once”， “always” 和 “pertest”。 pretest： 
+							每一个测试创建一个新进程，为每个测试创建新的JVM是单独测试的最彻底方式，但也是最慢的，不适合hudson上持续回归。 once：在一个进程中进行所有测试。once为默认设置，在Hudson上持续回归时建议使用默认设置。 
+							always：在一个进程中并行的运行脚本，Junit4.7以上版本才可以使用，surefire的版本要在2.6以上提供这个功能，其中 threadCount：执行时，指定可分配的线程数量。只和参数parallel配合使用有效。默认：5。 -->
+						<forkMode>once</forkMode>
+						<argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=256m</argLine>
+						<additionalClasspathElements>
+							<additionalClasspathElement>
+								${basedir}/target/test-classes
+							</additionalClasspathElement>
+						</additionalClasspathElements>
+						<includes>
+							<include>**/*Test.java</include>
+						</includes>
+						<excludes>
+							<exclude>**/TestBean.java</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<!-- jar包生成插件 ：创建项目jar包 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
+					<configuration>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<classpathPrefix>lib/</classpathPrefix>
+								<mainClass>.....Main</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+				<!-- 安装插件：将项目输出构件安装到本地仓库 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+				</plugin>
+				<!-- 发布插件 ：将项目输出构件部署到远程仓库 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+				</plugin>
+				<!-- 源码插件:发布时自动将源码同时发布 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<!-- 打包source文件为jar文件 -->
+					<configuration>
+						<testFailureIgnore>true</testFailureIgnore>
+						<attach>true</attach>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>package</phase>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<!-- 文档插件:发布时自动生成文档 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<configuration>
+						<aggregate>true</aggregate>
+						<charset>UTF-8</charset>
+						<encoding>${project.build.sourceEncoding}</encoding>
+						<docencoding>UTF-8</docencoding>
+					</configuration>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<phase>package</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<!-- 资源插件：复制主资源文件至主输出目录 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<!-- 编译插件：编译主代码至主输出目录 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<!-- 单元测试插件 ：执行测试用例 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			<!-- jar包生成插件 ：创建项目jar包 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<!-- 安装插件：将项目输出构件安装到本地仓库 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+			</plugin>
+			<!-- 发布插件 ：将项目输出构件部署到远程仓库 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+			</plugin>
+			<!-- 源码插件:发布时自动将源码同时发布 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
