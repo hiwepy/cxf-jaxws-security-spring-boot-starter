@@ -160,7 +160,7 @@
 		<!--cxf-frontend -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-simple</artifactId>
+			<artifactId>cxf-rt-frontend-sample</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
@@ -448,7 +448,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-simple</artifactId>
+			<artifactId>cxf-rt-frontend-sample</artifactId>
 			<version>${cxf.version}</version>
 			<exclusions>
 				<exclusion>
