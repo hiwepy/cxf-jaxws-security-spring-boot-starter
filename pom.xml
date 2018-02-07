@@ -158,11 +158,11 @@
 			</exclusions>
 		</dependency>
 		<!--cxf-frontend -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-sample</artifactId>
 			<version>${cxf.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
@@ -298,11 +298,11 @@
 			<artifactId>cxf-rt-rs-security-oauth2</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-rs-security-oauth2-jwt</artifactId>
 			<version>${cxf.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-rs-security-cors</artifactId>
@@ -329,7 +329,7 @@
 			<artifactId>cxf-rt-bindings-corba</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-http</artifactId>
 			<version>${cxf.version}</version>
@@ -338,17 +338,17 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-jbi</artifactId>
 			<version>${cxf.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-coloc</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-bindings-object</artifactId>
 			<version>${cxf.version}</version>
-		</dependency>
+		</dependency> -->
 		<!-- cxf-rt-databinding -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
@@ -360,7 +360,7 @@
 			<artifactId>cxf-rt-databinding-aegis</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-databinding-jibx</artifactId>
 			<version>${cxf.version}</version>
@@ -374,7 +374,7 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-databinding-sdo</artifactId>
 			<version>${cxf.version}</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
@@ -391,11 +391,11 @@
 			<artifactId>cxf-rt-javascript</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-wstx-msv-validation</artifactId>
 			<version>${cxf.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-xerces-xsd-validation</artifactId>
@@ -446,7 +446,7 @@
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-sample</artifactId>
 			<version>${cxf.version}</version>
@@ -456,7 +456,7 @@
 					<artifactId>cxf-api</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency> -->
 		<!--cxf-transports -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
