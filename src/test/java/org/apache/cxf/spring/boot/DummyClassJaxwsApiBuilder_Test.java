@@ -2,7 +2,7 @@ package org.apache.cxf.spring.boot;
 
 import java.lang.reflect.Method;
 
-import org.apache.cxf.spring.boot.util.DummyClassJaxwsApiBuilder;
+import org.apache.cxf.spring.boot.utils.DummyClassJaxwsApiBuilder;
 import org.junit.Test;
 
 public class DummyClassJaxwsApiBuilder_Test {

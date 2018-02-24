@@ -2,8 +2,8 @@ package org.apache.cxf.spring.boot;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(CxfProperties.PREFIX)
-public class CxfProperties {
+@ConfigurationProperties(CxfJaxwsProperties.PREFIX)
+public class CxfJaxwsProperties {
 
 	public static final String PREFIX = "cxf.api";
 

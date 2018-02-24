@@ -1,4 +1,4 @@
-package org.apache.cxf.spring.boot.util;
+package org.apache.cxf.spring.boot.utils;
 
 import org.apache.commons.lang3.builder.Builder;
 

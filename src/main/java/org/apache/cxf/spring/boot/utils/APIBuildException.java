@@ -1,4 +1,4 @@
-package org.apache.cxf.spring.boot.util;
+package org.apache.cxf.spring.boot.utils;
 
 @SuppressWarnings("serial")
 public class APIBuildException extends RuntimeException {
