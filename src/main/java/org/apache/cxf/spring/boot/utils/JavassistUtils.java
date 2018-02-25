@@ -17,6 +17,7 @@ package org.apache.cxf.spring.boot.utils;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import javassist.ClassClassPath;
 import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -32,16 +33,21 @@ import javassist.NotFoundException;
  * @author 		： <a href="https://github.com/vindell">vindell</a>
  * @see http://blog.csdn.net/youaremoon/article/details/50766972
  * @see https://my.oschina.net/GameKing/blog/794580
- * 
+ * @see http://www.codeweblog.com/%E5%85%B3%E4%BA%8Ejavassist-notfoundexception/
  */
 public class JavassistUtils {
 
 	private static ConcurrentHashMap<ClassLoader, ClassPool> CLASS_POOL_MAP = new ConcurrentHashMap<ClassLoader, ClassPool>();
 	
-	public static ClassPool getCurrentThreadClassPool() {
-		ClassPool classPool = ClassPool.getDefault();
-		classPool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
-		return classPool;
+	public static ClassPool getDefaultPool() {
+		ClassPool pool = ClassPool.getDefault();
+		pool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
+		/**为defaultPool添加一个类路径 : http://www.codeweblog.com/%E5%85%B3%E4%BA%8Ejavassist-notfoundexception/*/
+		pool.insertClassPath(new ClassClassPath(JavassistUtils.class));
+		pool.importPackage("java.util");
+		pool.importPackage("java.lang");
+		pool.importPackage("java.lang.reflect");
+		return pool;
 	}
 	
 	/**
@@ -54,9 +60,16 @@ public class JavassistUtils {
 	 */
 	public static ClassPool getClassPool(ClassPath... classPaths) {
 		if (null == classPaths || classPaths.length == 0) {
-			return ClassPool.getDefault();
+			return getDefaultPool();
 		}
 		ClassPool pool = new ClassPool(true);
+		/**为defaultPool添加一个类路径 : http://www.codeweblog.com/%E5%85%B3%E4%BA%8Ejavassist-notfoundexception/*/
+		pool.insertClassPath(new ClassClassPath(JavassistUtils.class));
+		
+		pool.importPackage("java.util");
+		pool.importPackage("java.lang");
+		pool.importPackage("java.lang.reflect");
+		
 		for (ClassPath classPath : classPaths) {
 			pool.appendClassPath(classPath);
 		}
@@ -70,13 +83,21 @@ public class JavassistUtils {
 	 */
 	public static ClassPool getClassPool(ClassLoader loader) {
 		if (null == loader) {
-			return ClassPool.getDefault();
+			return getDefaultPool();
 		}
 
 		ClassPool pool = CLASS_POOL_MAP.get(loader);
 		if (null == pool) {
+			
 			pool = new ClassPool(true);
 			pool.appendClassPath(new LoaderClassPath(loader));
+			/**为defaultPool添加一个类路径 : http://www.codeweblog.com/%E5%85%B3%E4%BA%8Ejavassist-notfoundexception/*/
+			pool.insertClassPath(new ClassClassPath(JavassistUtils.class));
+			
+			pool.importPackage("java.util");
+			pool.importPackage("java.lang");
+			pool.importPackage("java.lang.reflect");
+			
 			CLASS_POOL_MAP.put(loader, pool);
 		}
 		return pool;

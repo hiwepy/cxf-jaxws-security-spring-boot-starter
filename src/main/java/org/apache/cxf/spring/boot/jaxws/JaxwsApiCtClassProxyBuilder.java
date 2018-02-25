@@ -1,7 +1,6 @@
 package org.apache.cxf.spring.boot.jaxws;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,12 +12,13 @@ import javax.jws.WebService;
 
 import org.apache.commons.lang3.builder.Builder;
 import org.apache.cxf.spring.boot.utils.JavassistUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
@@ -26,6 +26,7 @@ import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
+import javassist.bytecode.FieldInfo;
 import javassist.bytecode.ParameterAnnotationsAttribute;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.BooleanMemberValue;
@@ -34,14 +35,24 @@ import javassist.bytecode.annotation.StringMemberValue;
 
 /**
  * 
- * @className	： JaxwsApiCtClassBuilder
+ * @className	： JaxwsApiCtClassProxyBuilder
  * @description	：动态构建ws接口
  * @see http://www.cnblogs.com/sunfie/p/5154246.html
  * @see http://blog.csdn.net/youaremoon/article/details/50766972
  * @see https://my.oschina.net/GameKing/blog/794580
  * @see http://wsmajunfeng.iteye.com/blog/1912983
  */
-public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
+public class JaxwsApiCtClassProxyBuilder implements Builder<CtClass> {
+	
+	private static final String PROXY_HANDLER = "proxyHandler";
+	/**
+	 * 动态生成的代理类名前缀 prefix name for Proxy
+	 */
+	private static final String PROXY_CLASS_NAME = ".Gproxy$";
+	/**
+	 * 代理类名索引 用于标示一个唯一的代理类（具体的代理类名为Gproxy$n） index for generate a unique proxy class
+	 */
+	private static int proxyIndex = 1;
 	
 	// 构建动态类
 	private ClassPool pool = null;
@@ -49,30 +60,32 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	private ClassFile ccFile = null;
 	//private Loader loader = new Loader(pool);
 	
-	public JaxwsApiCtClassBuilder(final String classname) throws CannotCompileException, NotFoundException  {
-		this(JavassistUtils.getDefaultPool(), classname);
-	}
-	
-	public JaxwsApiCtClassBuilder(final ClassPool pool, final String classname) throws CannotCompileException, NotFoundException {
-		
+	private JaxwsApiCtClassProxyBuilder(final ClassPool pool, final Class<?> targetClass, final InvocationHandler handler) {
 		this.pool = pool;
-		this.ctclass = this.pool.getOrNull(classname);
+		
+		String proxyClassName  = targetClass.getPackage().getName() + PROXY_CLASS_NAME + proxyIndex++ ;
+		
+		org.apache.cxf.spring.boot.jaxws.JaxwsHandler
+		
+		/* 动态创建代理类 */
+		this.ctclass = this.pool.getOrNull(proxyClassName);
 		if( null == this.ctclass) {
-			this.ctclass = this.pool.makeClass(classname);
+			this.ctclass = this.pool.makeClass(proxyClassName);
 		}
-		
-		/* 获得 JaxwsHandler 类作为动态类的父类 */
-		CtClass superclass = pool.get(JaxwsApi.class.getName());
-		ctclass.setSuperclass(superclass);
-		
-		// 默认添加无参构造器  
-		CtConstructor cons = new CtConstructor(null, ctclass);  
-		cons.setBody("{}");  
-		ctclass.addConstructor(cons);
-		
 		// 当 ClassPool.doPruning=true的时候，Javassist 在CtClass object被冻结时，会释放存储在ClassPool对应的数据。这样做可以减少javassist的内存消耗。默认情况ClassPool.doPruning=false。
 		this.ctclass.stopPruning(true);
 		this.ccFile = this.ctclass.getClassFile();
+		
+		ctclass.addField(f, init);
+		
+	}
+	
+	public static JaxwsApiCtClassProxyBuilder makeClass(final Class<?> targetClass, final InvocationHandler handler) {
+		return makeClass(ClassPool.getDefault(), targetClass, handler);
+	}
+	
+	public static JaxwsApiCtClassProxyBuilder makeClass(final ClassPool pool, final Class<?> targetClass, final InvocationHandler handler) {
+		return new JaxwsApiCtClassProxyBuilder(pool, targetClass, handler);
 	}
 	
 	/**
@@ -81,11 +94,11 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @param targetNamespace：指定你想要的名称空间，默认是使用接口实现类的包名的反缀（字符串）
 	 * @return
 	 */
-	public JaxwsApiCtClassBuilder annotationForType(final String name, final String targetNamespace) {
+	public JaxwsApiCtClassBuilder2 annotationForType(final String name, final String targetNamespace) {
 		return this.annotationForType(targetNamespace, targetNamespace, null, null, null, null);
 	}
 	
-	public JaxwsApiCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName) {
+	public JaxwsApiCtClassBuilder2 annotationForType(final String name, final String targetNamespace, String serviceName) {
 		return this.annotationForType(targetNamespace, targetNamespace, serviceName, null, null, null);
 	}
 	
@@ -99,7 +112,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @param endpointInterface： 服务接口全路径, 指定做SEI（Service EndPoint Interface）服务端点接口（字符串）
 	 * @return
 	 */
-	public JaxwsApiCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName,
+	public JaxwsApiCtClassBuilder2 annotationForType(final String name, final String targetNamespace, String serviceName,
 			String portName, String wsdlLocation, String endpointInterface) {
 
 		ConstPool constPool = this.ccFile.getConstPool();
@@ -140,13 +153,13 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
      *
      * @param src               the source text.
      */
-	public <T> JaxwsApiCtClassBuilder makeField(final String src) throws CannotCompileException {
+	public <T> JaxwsApiCtClassBuilder2 makeField(final String src) throws CannotCompileException {
 		//创建属性
         ctclass.addField(CtField.make(src, ctclass));
 		return this;
 	}
 	
-	public <T> JaxwsApiCtClassBuilder newField(final Class<T> fieldClass, final String fieldName, final String fieldValue) throws CannotCompileException, NotFoundException {
+	public <T> JaxwsApiCtClassBuilder2 newField(final Class<T> fieldClass, final String fieldName, final String fieldValue) throws CannotCompileException, NotFoundException {
 		
 		// 检查字段是否已经定义
 		if(JavassistUtils.hasField(ctclass, fieldName)) {
@@ -158,12 +171,65 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
         field.setModifiers(Modifier.PRIVATE);
 
         //新增Field
-        ctclass.addField(field, String.valueOf(fieldValue));
+        ctclass.addField(field, fieldValue);
         
 		return this;
 	}
 	
-	public <T> JaxwsApiCtClassBuilder removeField(final String fieldName) throws NotFoundException {
+	public <T> JaxwsApiCtClassBuilder2 newFieldWithValue(final Class<T> fieldClass, final String fieldName, final String fieldValue) throws CannotCompileException, NotFoundException {
+		
+		// 检查字段是否已经定义
+		if(JavassistUtils.hasField(ctclass, fieldName)) {
+			return this;
+		}
+		
+		ConstPool constPool = this.ccFile.getConstPool();
+		
+		/** 添加属性字段 */
+		CtField field = new CtField(this.pool.get(fieldClass.getName()), fieldName, ctclass);
+        field.setModifiers(Modifier.PRIVATE);
+
+        /** 在属性上添加注解(Value) */
+        FieldInfo fieldInfo = field.getFieldInfo();
+        AnnotationsAttribute fieldAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+        Annotation value = new Annotation(Value.class.getName(),constPool);
+        value.addMemberValue("value", new StringMemberValue(fieldValue, constPool));
+        fieldAttr.addAnnotation(value);
+        fieldInfo.addAttribute(fieldAttr);
+		
+        //新增Field
+        ctclass.addField(field);
+        
+		return this;
+	}
+	
+	public <T> JaxwsApiCtClassBuilder2 newFieldWithAutowired(final Class<T> fieldClass, final String fieldName) throws CannotCompileException, NotFoundException  {
+		
+		// 检查字段是否已经定义
+		if(JavassistUtils.hasField(ctclass, fieldName)) {
+			return this;
+		}
+		
+		ConstPool constPool = this.ccFile.getConstPool();
+		
+		/** 添加属性字段 */
+		CtField field = new CtField(this.pool.get(fieldClass.getName()), fieldName, ctclass);
+        field.setModifiers(Modifier.PRIVATE);
+
+        /** 在属性上添加注解(Autowired) */
+        FieldInfo fieldInfo = field.getFieldInfo();
+        AnnotationsAttribute fieldAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+        Annotation autowired = new Annotation(Autowired.class.getName(), constPool);
+        fieldAttr.addAnnotation(autowired);
+        fieldInfo.addAttribute(fieldAttr);
+        
+        //新增Field
+        ctclass.addField(field);
+		
+		return this;
+	}
+	
+	public <T> JaxwsApiCtClassBuilder2 removeField(final String fieldName) throws NotFoundException {
 		
 		// 检查字段是否已经定义
 		if(!JavassistUtils.hasField(ctclass, fieldName)) {
@@ -185,7 +251,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
      *
      * @param src               the source text. 
      */
-	public <T> JaxwsApiCtClassBuilder makeMethod(final String src) throws CannotCompileException {
+	public <T> JaxwsApiCtClassBuilder2 makeMethod(final String src) throws CannotCompileException {
 		//创建方法 
 		ctclass.addMethod(CtMethod.make(src, ctclass));
 		return this;
@@ -438,7 +504,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException 
 	 */
-	public <T> JaxwsApiCtClassBuilder newMethod(final Class<T> rtClass, final String methodName, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
+	public <T> JaxwsApiCtClassBuilder2 newMethod(final Class<T> rtClass, final String methodName, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
 		return this.newMethod(new CtWebResult<T>(rtClass), new CtWebMethod(methodName), params);
 	}
 	
@@ -452,9 +518,12 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException 
 	 */
-	public <T> JaxwsApiCtClassBuilder newMethod(final CtWebResult<T> result, final CtWebMethod method, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
+	public <T> JaxwsApiCtClassBuilder2 newMethod(final CtWebResult<T> result, final CtWebMethod method, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
 	       
 		ConstPool constPool = this.ccFile.getConstPool();
+		
+		// 自动注入对象proxyHandler
+		this.newFieldWithAutowired(JaxwsHandler.class, PROXY_HANDLER);
 		
 		CtMethod ctMethod = null;
 		// 参数模式定义
@@ -491,19 +560,15 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 		
 		// 构造方法体
 		StringBuilder body = new StringBuilder(); 
-        body.append("{\n");
-        	body.append("if(getHandler() != null){\n");
-        		body.append("Method method = this.getClass().getDeclaredMethod(\"" + method.getOperationName() + "\", $sig);");
-        		body.append("return ($r)getHandler().invoke($0, method, $args);");
-        	body.append("}\n"); 
-	        body.append("return null;\n");
-        body.append("}"); 
+        body.append("{");
+	        body.append("return ($r) proxyHandler.doHandler(uid, $$);\n");
+        body.append("}");
         // 将方法的内容设置为要写入的代码，当方法被 abstract修饰时，该修饰符被移除。
         ctMethod.setBody(body.toString());
         
         // 构造异常处理逻辑
         CtClass etype = pool.get("java.lang.Exception");
-        ctMethod.addCatch("{ System.out.println($e); throw $e; }", etype);
+        ctMethod.addCatch("{ proxyHandler.onException(uid, $e, $$); }", etype);
         
         // 添加方法注解
         AnnotationsAttribute methodAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
@@ -572,7 +637,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
         return this;
 	}
 	
-	public <T> JaxwsApiCtClassBuilder removeMethod(final String methodName, CtWebParam<?>... params) throws NotFoundException {
+	public <T> JaxwsApiCtClassBuilder2 removeMethod(final String methodName, CtWebParam<?>... params) throws NotFoundException {
 		
 		// 有参方法
 		if(params != null && params.length > 0) {
@@ -622,27 +687,8 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
         	// 通过类加载器加载该CtClass
 			return ctclass.toClass();
 		} finally {
-			// 将该class从ClassPool中删除
 			ctclass.detach();
 		} 
 	}
-	
-	@SuppressWarnings("unchecked")
-	public Object toInstance(final InvocationHandler handler) throws CannotCompileException, NotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        try {
-        	// 添加有参构造器，注入回调接口
-			CtConstructor cc = new CtConstructor(new CtClass[] { pool.get(InvocationHandler.class.getName()) }, ctclass);
-			cc.setBody("{super($1);}");
-			ctclass.addConstructor(cc);
-			// proxy.writeFile();
-			// 通过类加载器加载该CtClass，并通过构造器初始化对象
-			return ctclass.toClass().getConstructor(InvocationHandler.class).newInstance(handler);
-		} finally {
-			// 将该class从ClassPool中删除
-			ctclass.detach();
-		} 
-	}
-	
-	
 
 }
