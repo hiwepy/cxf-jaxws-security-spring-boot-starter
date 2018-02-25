@@ -158,7 +158,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
         field.setModifiers(Modifier.PRIVATE);
 
         //新增Field
-        ctclass.addField(field, String.valueOf(fieldValue));
+        ctclass.addField(field, "\"" + fieldValue + "\"");
         
 		return this;
 	}
@@ -260,6 +260,40 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * https://www.cnblogs.com/zhao-shan/p/5515174.html
 	 */
 	public static class CtWebParam<T> {
+
+		public CtWebParam(Class<T> type, String name) {
+			this.type = type;
+			this.name = name;
+		}
+		
+		public CtWebParam(Class<T> type, String name,boolean header) {
+			this.type = type;
+			this.name = name;
+			this.header = header;
+		}
+		
+		public CtWebParam(Class<T> type, String name,Mode mode) {
+			this.type = type;
+			this.name = name;
+			this.mode = mode;
+		}
+		
+		public CtWebParam(Class<T> type, String name,Mode mode, boolean header) {
+			this.type = type;
+			this.name = name;
+			this.mode = mode;
+			this.header = header;
+		}
+		
+		public CtWebParam(Class<T> type, String name, String partName, String targetNamespace, Mode mode,
+				boolean header) {
+			this.type = type;
+			this.name = name;
+			this.partName = partName;
+			this.targetNamespace = targetNamespace;
+			this.mode = mode;
+			this.header = header;
+		}
 
 		/**
 		 * 参数对象类型

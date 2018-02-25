@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.apache.cxf.spring.boot.jaxws.JaxwsApiDummyClassBuilder;
 import org.junit.Test;
 
-public class DummyClassJaxwsApiBuilder_Test {
+public class JaxwsApiDummyClassBuilder_Test {
 
 	@Test
 	public void testM() throws Exception{

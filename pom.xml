@@ -34,6 +34,7 @@
 	</scm>
 
 	<properties>
+		<commons-io.version>2.5</commons-io.version>
 		<cxf.version>3.2.2</cxf.version>
 		<cxf-starter.version>3.2.2</cxf-starter.version>
 		<javassist.version>3.22.0-GA</javassist.version>
@@ -103,6 +104,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-autoconfigure</artifactId>
+		</dependency>
+		
+		<!-- Commons-IO contains utility classes, stream implementations, file filters, and endian classes.  --> 
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
 		</dependency>
 
 		<!-- CXF-Jaxws Spring Boot Starter -->
