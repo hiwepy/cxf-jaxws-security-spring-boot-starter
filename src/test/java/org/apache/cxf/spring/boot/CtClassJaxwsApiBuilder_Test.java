@@ -1,11 +1,9 @@
 package org.apache.cxf.spring.boot;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.lang.reflect.Method;
+import java.util.UUID;
 
-import org.apache.cxf.helpers.IOUtils;
-import org.apache.cxf.spring.boot.utils.CtClassJaxwsApiBuilder;
+import org.apache.cxf.spring.boot.jaxws.JaxwsApiCtClassBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
@@ -21,10 +19,12 @@ public class CtClassJaxwsApiBuilder_Test {
 	@Before
 	public void setup(){
 		try {
-			ctClass = new CtClassJaxwsApiBuilder("com.zfsoft.jaxws.FirstCase")
+			ctClass = new JaxwsApiCtClassBuilder("com.zfsoft.jaxws.FirstCase")
 					.annotationForType("get", "http://ws.zfsoft.com", "getxx")
-					.constantField(String.class, "uid", UUID.randomUUID().toString())
-					//.autowiredField(fieldClass, fieldName)
+					.makeField("public int k = 3;")
+					.newField(String.class, "uid", UUID.randomUUID().toString())
+					//.newFieldWithAutowired(fieldClass, fieldName)
+					//.newFieldWithValue(fieldClass, fieldName, fieldValue)
 					.makeMethod("public void sayHello(String txt) { System.out.println(uid);  System.out.println(txt); }")
 					.proxyMethod(Object.class, action, exclude, methodName, params)
 					.build();

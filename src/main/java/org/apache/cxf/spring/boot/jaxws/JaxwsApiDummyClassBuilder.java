@@ -1,4 +1,4 @@
-package org.apache.cxf.spring.boot.util;
+package org.apache.cxf.spring.boot.jaxws;
 
 import org.apache.commons.lang3.builder.Builder;
 
@@ -6,21 +6,21 @@ import cn.wensiqun.asmsupport.client.DummyClass;
 import cn.wensiqun.asmsupport.client.block.MethodBody;
 import cn.wensiqun.asmsupport.client.def.var.LocVar;
 
-public class DummyClassJaxrsApiBuilder implements Builder<DummyClass> {
+public class JaxwsApiDummyClassBuilder implements Builder<DummyClass> {
 
 	// 构建动态对象
 	private DummyClass dummy = null;
 	
-	public DummyClassJaxrsApiBuilder(final String className) {
+	public JaxwsApiDummyClassBuilder(final String className) {
 		this.dummy = new DummyClass(className);
 	}
 	
-	public DummyClassJaxrsApiBuilder output(String classOutPutPath) {
+	public JaxwsApiDummyClassBuilder output(String classOutPutPath) {
 		dummy.public_().setClassOutPutPath(classOutPutPath);
 		return this;
 	}
 	
-	public DummyClassJaxrsApiBuilder method(Object body) {
+	public JaxwsApiDummyClassBuilder method(Object body) {
 	 dummy.newMethod("main").public_().static_().argTypes(String[].class).body(new MethodBody() {
             @Override
             public void body(LocVar... args) {
