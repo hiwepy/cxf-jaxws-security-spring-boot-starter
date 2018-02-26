@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.cxf.spring.boot.jaxws.proxy;
+package org.apache.cxf.spring.boot.proxy;
 
 import javassist.CtMethod;
 import javassist.ClassPool;

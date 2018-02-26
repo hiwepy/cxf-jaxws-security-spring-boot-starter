@@ -19,7 +19,6 @@ package org.apache.cxf.spring.boot.jaxws.proxy;
 import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;
 
 /**
@@ -31,22 +30,26 @@ import javassist.util.proxy.ProxyFactory;
  * @param <T>
  * @see http://blog.csdn.net/mingxin95/article/details/51810499
  */
-public class JavassistProxyFactory<T> {
-	
-	// 代理工厂
-    ProxyFactory proxyFactory = new ProxyFactory();
-    
-    private T target;
+@SuppressWarnings( { "deprecation", "unchecked" })
+public class JavassistProxyFactory {
 
-    public void setTarget(T target) {
-        this.target = target;
+	/*
+	 * 要代理的对象
+	 */
+    public static <T> T getProxy(T target) throws InstantiationException, IllegalAccessException {
+    	 return (T) getProxy(target.getClass());
     }
-
-    @SuppressWarnings( "deprecation")
-    public T getProxy() throws InstantiationException, IllegalAccessException {
+    
+    /*
+     * 要代理的对象class
+     */
+    public static <T> T getProxy(Class<T> proxyClass) throws InstantiationException, IllegalAccessException {
         
+    	// 代理工厂
+        ProxyFactory proxyFactory = new ProxyFactory();
         // 设置需要创建子类的父类
-        proxyFactory.setSuperclass(target.getClass());
+        proxyFactory.setSuperclass(proxyClass);
+        
         /*
          * 定义一个拦截器。在调用目标方法时，Javassist会回调MethodHandler接口方法拦截，
          * 来实现你自己的代理逻辑，
@@ -68,22 +71,18 @@ public class JavassistProxyFactory<T> {
                 System.out.println("--------------------------------");
                 System.out.println(self.getClass());
                 //class com.javassist.demo.A_$$_javassist_0
-                System.out.println("要调用的方法名："+thismethod.getName());
-                System.out.println(proceed.getName());
-                System.out.println("开启事务-------");
+                System.out.println("代理类对方法的代理引用:"+thismethod.getName());
+                System.out.println("开启事务 -------");
 
                 Object result = proceed.invoke(self, args);
-                //下面的代码效果与上面的相同
-                //不过需要传入一个目标对象
-                //Object result = thismethod.invoke(target,args);
 
-                System.out.println("提交事务-------");
+                System.out.println("提交事务 -------");
                 return result;
             }
         });
-
+        
         // 通过字节码技术动态创建子类实例
-        return (T) proxyFactory.createClass().newInstance();
+        return  (T) proxyFactory.createClass().newInstance();
     }
 
 }

@@ -15,17 +15,6 @@
  */
 package org.apache.cxf.spring.boot;
 
-import org.apache.cxf.spring.boot.jaxws.proxy.DProxy;
-
-public class Test {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		clazz c = new clazz();
-		Interface i = (Interface) DProxy.createProxy(clazz.class, new MyInterceptor(c));
-		i.Action(123);
-	}
-
+public interface Smileable {
+	 Object smile() throws Exception;  
 }

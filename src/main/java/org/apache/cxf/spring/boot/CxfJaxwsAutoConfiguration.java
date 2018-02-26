@@ -1,22 +1,13 @@
 package org.apache.cxf.spring.boot;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
-import org.apache.cxf.jaxws.EndpointImpl;
-import org.apache.cxf.spring.boot.endpoint.APIEndpoint;
-import org.apache.cxf.spring.boot.endpoint.APIEndpointRepository;
-import org.apache.cxf.spring.boot.jaxws.security.UsernamePwdAuthInterceptor;
-import org.apache.cxf.spring.boot.utils.CtClassJaxwsApiBuilder;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
-import org.springframework.beans.BeanInstantiationException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -29,9 +20,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javassist.CannotCompileException;
-import javassist.NotFoundException;
 
 //http://cxf.apache.org/docs/springboot.html
 
@@ -51,18 +39,11 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	@Autowired
     private Bus bus;
 	
-	@Autowired
-	private APIEndpointRepository endpointRepository;
 	
 	@Bean
 	@ConditionalOnMissingBean(Bus.class)
 	public Bus bus(){
 	    return new SpringBus();
-	}
-	
-	@Bean
-	public List<APIEndpoint> apiEndpoints() {
-		return getEndpointRepository().getEndpoints();
 	}
 	
 	/** 
@@ -74,15 +55,15 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	 * 
 	 */
 	@Bean("endpointMap")
-	public Map<String,Endpoint> endpoints(List<APIEndpoint> apiEndpoints) {
+	public Map<String, Endpoint> endpoints() {
 		
-		Map<String, Endpoint> endpointMap = new HashMap<String, Endpoint>();
+		/*Map<String, Endpoint> endpointMap = new HashMap<String, Endpoint>();
 		
 		for (APIEndpoint apiEndpoint : apiEndpoints) {
 			// 动态创建、发布 Ws
 			try {
 				
-				Class jaxwsApiClass = new CtClassJaxwsApiBuilder("JaxwsApi" + apiEndpoint.getName()).method("HelloWoldService2").build().toClass();
+				Class jaxwsApiClass = new JaxwsApiCtClassBuilder("JaxwsApi" + apiEndpoint.getName()).method("HelloWoldService2").build().toClass();
 				
 				EndpointImpl endpoint = new EndpointImpl(bus, BeanUtils.instantiateClass(jaxwsApiClass));
 				
@@ -104,24 +85,10 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 				e.printStackTrace();
 			}
 			
-		}
+		}*/
 		
-		return endpointMap;
+		return null;
 	}
-	
-	/*
-	@Bean
-    public Server rsServer() {
-        JAXRSServerFactoryBean endpoint = new JAXRSServerFactoryBean();
-        endpoint.setBus(bus);
-        endpoint.setAddress("/");
-        // Register 2 JAX-RS root resources supporting "/sayHello/{id}" and "/sayHello2/{id}" relative paths
-        endpoint.setServiceBeans(Arrays.<Object>asList(new HelloServiceImpl1(), new HelloServiceImpl2()));
-        endpoint.setFeatures(Arrays.asList(new Swagger2Feature()));
-        return endpoint.create();
-    }*/
-	
-	
     
 	public WSS4JInInterceptor WSS4JInInterceptor() {
 		WSS4JInInterceptor s = new WSS4JInInterceptor();
@@ -138,14 +105,6 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
-	}
-
-	public APIEndpointRepository getEndpointRepository() {
-		return endpointRepository;
-	}
-
-	public void setEndpointRepository(APIEndpointRepository endpointRepository) {
-		this.endpointRepository = endpointRepository;
 	}
 	
 }

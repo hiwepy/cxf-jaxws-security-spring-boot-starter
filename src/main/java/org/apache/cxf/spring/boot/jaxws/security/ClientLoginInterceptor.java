@@ -1,4 +1,4 @@
-package org.apache.cxf.spring.boot;
+package org.apache.cxf.spring.boot.jaxws.security;
 
 import org.apache.cxf.binding.soap.SoapMessage;  
 import org.apache.cxf.headers.Header;  

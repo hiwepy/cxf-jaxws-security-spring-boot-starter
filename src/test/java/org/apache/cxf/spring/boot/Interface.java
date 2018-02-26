@@ -18,7 +18,7 @@ package org.apache.cxf.spring.boot;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.cxf.spring.boot.jaxws.proxy.Interceptor;
+import org.apache.cxf.spring.boot.proxy.Interceptor;
 
 
 public interface Interface {

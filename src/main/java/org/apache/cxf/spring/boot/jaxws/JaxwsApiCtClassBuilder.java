@@ -676,7 +676,5 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 			ctclass.detach();
 		} 
 	}
-	
-	
 
 }
