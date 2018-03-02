@@ -38,4 +38,6 @@ public @interface WebServiceEndpoint {
 
 	String[] outFaultInterceptors() default {""};
 	
+	String[] features() default {""};
+	
 }

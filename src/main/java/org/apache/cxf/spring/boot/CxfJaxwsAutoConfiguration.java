@@ -10,6 +10,7 @@ import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
+import org.apache.cxf.feature.Feature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.phase.PhaseInterceptor;
 import org.apache.cxf.spring.boot.jaxws.annotation.WebServiceEndpoint;
@@ -88,8 +89,8 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 		Map<String, Object> beansOfType = getApplicationContext().getBeansWithAnnotation(WebService.class);
 		if (!ObjectUtils.isEmpty(beansOfType)) {
 			
-			Map<String, PhaseInterceptor> interceptors = getApplicationContext().getBeansOfType(PhaseInterceptor.class);
-			
+			Map<String, PhaseInterceptor> interceptorsOfType = getApplicationContext().getBeansOfType(PhaseInterceptor.class);
+			Map<String, Feature> featuresOfType = getApplicationContext().getBeansOfType(Feature.class);
 			
 			Iterator<Entry<String, Object>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
@@ -109,33 +110,41 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 				
 				// 数据上行拦截器
 				for (String name : annotationType.inInterceptors()) {
-					PhaseInterceptor interceptor = interceptors.get(name);
+					PhaseInterceptor interceptor = interceptorsOfType.get(name);
 					if(!ObjectUtils.isEmpty(interceptor)) {
 						endpoint.getInInterceptors().add(interceptor);
 					}
 				}
 				// 数据下行拦截器
 				for (String name : annotationType.outInterceptors()) {
-					PhaseInterceptor interceptor = interceptors.get(name);
+					PhaseInterceptor interceptor = interceptorsOfType.get(name);
 					if(!ObjectUtils.isEmpty(interceptor)) {
 						endpoint.getOutInterceptors().add(interceptor);
 					}
 				}
 				// 数据上行Fault拦截器
 				for (String name : annotationType.inFaultInterceptors()) {
-					PhaseInterceptor interceptor = interceptors.get(name);
+					PhaseInterceptor interceptor = interceptorsOfType.get(name);
 					if(!ObjectUtils.isEmpty(interceptor)) {
 						endpoint.getInFaultInterceptors().add(interceptor);
 					}
 				}
 				// 数据下行Fault拦截器
 				for (String name : annotationType.outFaultInterceptors()) {
-					PhaseInterceptor interceptor = interceptors.get(name);
+					PhaseInterceptor interceptor = interceptorsOfType.get(name);
 					if(!ObjectUtils.isEmpty(interceptor)) {
 						endpoint.getOutFaultInterceptors().add(interceptor);
 					}
 				}
-
+				
+				// Feature
+				for (String name : annotationType.features()) {
+					Feature feature = featuresOfType.get(name);
+					if(!ObjectUtils.isEmpty(feature)) {
+						endpoint.getFeatures().add(feature);
+					}
+				}
+				
 				endpoints.put(annotationType.addr(), endpoint);
 				
 			}
