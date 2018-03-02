@@ -35,7 +35,6 @@
 
 	<properties>
 		<commons-io.version>2.5</commons-io.version>
-		<commons-lang3.version>3.7</commons-lang3.version>
 		<cxf.version>3.2.2</cxf.version>
 		<cxf-starter.version>3.2.2</cxf-starter.version>
 		<javassist.version>3.22.0-GA</javassist.version>
@@ -100,12 +99,12 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>${commons-lang3.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
+			<version>${javassist.version}</version>
 		</dependency>
 
 		<!-- CXF-Jaxws Spring Boot Starter -->
