@@ -43,8 +43,8 @@ public class UsernamePwdAuthInterceptor extends AbstractPhaseInterceptor<SoapMes
             throw new Fault(new IllegalArgumentException("找不到Header，无法验证用户信息"));  
         }  
   
-        NodeList users = head.getElementsByTagName("username");  
-        NodeList passwords = head.getElementsByTagName("password");  
+        NodeList users = head.getElementsByTagName(USER_NAME);  
+        NodeList passwords = head.getElementsByTagName(USER_PASSWORD);  
         if (users.getLength() < 1) {  
             throw new Fault(new IllegalArgumentException("找不到用户信息"));  
         }  

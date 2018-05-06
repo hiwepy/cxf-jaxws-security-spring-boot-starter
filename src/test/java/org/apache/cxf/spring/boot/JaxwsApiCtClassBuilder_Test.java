@@ -9,8 +9,8 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.cxf.spring.boot.jaxws.JaxwsApiCtClassBuilder;
-import org.apache.cxf.spring.boot.jaxws.JaxwsApiCtClassBuilder.CtWebParam;
+import org.apache.cxf.spring.boot.jaxws.EndpointApiCtClassBuilder;
+import org.apache.cxf.spring.boot.jaxws.EndpointApiCtClassBuilder.CtWebParam;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -22,7 +22,7 @@ public class JaxwsApiCtClassBuilder_Test {
 	//@Test
 	public void testClass() throws Exception{
 		
-		CtClass ctClass = new JaxwsApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCase1")
+		CtClass ctClass = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCase1")
 				.annotationForType("get", "http://ws.cxf.com", "getxx")
 				.makeField("public int k = 3;")
 				.newField(String.class, "uid", UUID.randomUUID().toString())
@@ -101,7 +101,7 @@ public class JaxwsApiCtClassBuilder_Test {
 			}
 		};
 		
-		Object ctObject = new JaxwsApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCaseV2")
+		Object ctObject = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCaseV2")
 				.annotationForType("get", "http://ws.cxf.com", "getxx")
 				.makeField("public int k = 3;")
 				.newField(String.class, "uid", UUID.randomUUID().toString())

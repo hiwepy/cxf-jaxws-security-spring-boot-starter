@@ -22,22 +22,25 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-import org.apache.cxf.spring.boot.jaxws.JaxwsApi;
+import org.apache.cxf.spring.boot.jaxws.EndpointApi;
 
 @WebService(serviceName = "sample", // 与接口中指定的name一致
 		targetNamespace = "http://ws.cxf.com/"// , // 与接口中的命名空间一致,一般是接口的包名倒
 // endpointInterface = "org.apache.cxf.spring.boot.api.JaxwsSample"// 接口地址
 )
-public class JaxwsApiSample extends JaxwsApi {
+public class EndpointApiSample extends EndpointApi {
 
-	public JaxwsApiSample() {
+	public EndpointApiSample() {
 	}
 
-	public JaxwsApiSample(InvocationHandler handler) {
+	public EndpointApiSample(InvocationHandler handler) {
 		super(handler);
 	}
 
-	@WebMethod
+	/*
+	 * action 需要填写完成，有发现使用Soap接口调用无法识别
+	 */
+	@WebMethod(operationName = "sayHello", action = "http://ws.cxf.com/sayHello/")
 	@WebResult(name = "String", targetNamespace = "")
 	public String sayHello(@WebParam(name = "userName") String name) {
 		
@@ -48,13 +51,13 @@ public class JaxwsApiSample extends JaxwsApi {
 		return "Hello ," + name;
 	}
 
-	@WebMethod
+	@WebMethod(operationName = "sayHello2", action = "http://ws.cxf.com/sayHello/")
 	@WebResult(name = "String", targetNamespace = "")
 	public String sayHello2(@WebParam(name = "userName") String name) {
 		return "Hello ," + name;
 	}
 	
-	@WebMethod
+	@WebMethod(operationName = "invoke", action = "http://ws.cxf.com/sayHello/")
 	@WebResult(name = "String", targetNamespace = "")
 	public String invoke(@WebParam(name = "userName") String name) {
 		

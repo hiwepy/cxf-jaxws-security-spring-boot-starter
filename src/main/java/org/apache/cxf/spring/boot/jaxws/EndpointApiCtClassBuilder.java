@@ -34,14 +34,14 @@ import javassist.bytecode.annotation.StringMemberValue;
 
 /**
  * 
- * @className	： JaxwsApiCtClassBuilder
+ * @className	： EndpointApiCtClassBuilder
  * @description	：动态构建ws接口
  * @see http://www.cnblogs.com/sunfie/p/5154246.html
  * @see http://blog.csdn.net/youaremoon/article/details/50766972
  * @see https://my.oschina.net/GameKing/blog/794580
  * @see http://wsmajunfeng.iteye.com/blog/1912983
  */
-public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
+public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	
 	// 构建动态类
 	private ClassPool pool = null;
@@ -49,11 +49,11 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	private ClassFile ccFile = null;
 	//private Loader loader = new Loader(pool);
 	
-	public JaxwsApiCtClassBuilder(final String classname) throws CannotCompileException, NotFoundException  {
+	public EndpointApiCtClassBuilder(final String classname) throws CannotCompileException, NotFoundException  {
 		this(JavassistUtils.getDefaultPool(), classname);
 	}
 	
-	public JaxwsApiCtClassBuilder(final ClassPool pool, final String classname) throws CannotCompileException, NotFoundException {
+	public EndpointApiCtClassBuilder(final ClassPool pool, final String classname) throws CannotCompileException, NotFoundException {
 		
 		this.pool = pool;
 		this.ctclass = this.pool.getOrNull(classname);
@@ -62,7 +62,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 		}
 		
 		/* 获得 JaxwsHandler 类作为动态类的父类 */
-		CtClass superclass = pool.get(JaxwsApi.class.getName());
+		CtClass superclass = pool.get(EndpointApi.class.getName());
 		ctclass.setSuperclass(superclass);
 		
 		// 默认添加无参构造器  
@@ -81,11 +81,11 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @param targetNamespace：指定你想要的名称空间，默认是使用接口实现类的包名的反缀（字符串）
 	 * @return
 	 */
-	public JaxwsApiCtClassBuilder annotationForType(final String name, final String targetNamespace) {
+	public EndpointApiCtClassBuilder annotationForType(final String name, final String targetNamespace) {
 		return this.annotationForType(targetNamespace, targetNamespace, null, null, null, null);
 	}
 	
-	public JaxwsApiCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName) {
+	public EndpointApiCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName) {
 		return this.annotationForType(targetNamespace, targetNamespace, serviceName, null, null, null);
 	}
 	
@@ -99,7 +99,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @param endpointInterface： 服务接口全路径, 指定做SEI（Service EndPoint Interface）服务端点接口（字符串）
 	 * @return
 	 */
-	public JaxwsApiCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName,
+	public EndpointApiCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName,
 			String portName, String wsdlLocation, String endpointInterface) {
 
 		ConstPool constPool = this.ccFile.getConstPool();
@@ -140,13 +140,13 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
      *
      * @param src               the source text.
      */
-	public <T> JaxwsApiCtClassBuilder makeField(final String src) throws CannotCompileException {
+	public <T> EndpointApiCtClassBuilder makeField(final String src) throws CannotCompileException {
 		//创建属性
         ctclass.addField(CtField.make(src, ctclass));
 		return this;
 	}
 	
-	public <T> JaxwsApiCtClassBuilder newField(final Class<T> fieldClass, final String fieldName, final String fieldValue) throws CannotCompileException, NotFoundException {
+	public <T> EndpointApiCtClassBuilder newField(final Class<T> fieldClass, final String fieldName, final String fieldValue) throws CannotCompileException, NotFoundException {
 		
 		// 检查字段是否已经定义
 		if(JavassistUtils.hasField(ctclass, fieldName)) {
@@ -163,7 +163,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 		return this;
 	}
 	
-	public <T> JaxwsApiCtClassBuilder removeField(final String fieldName) throws NotFoundException {
+	public <T> EndpointApiCtClassBuilder removeField(final String fieldName) throws NotFoundException {
 		
 		// 检查字段是否已经定义
 		if(!JavassistUtils.hasField(ctclass, fieldName)) {
@@ -185,7 +185,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
      *
      * @param src               the source text. 
      */
-	public <T> JaxwsApiCtClassBuilder makeMethod(final String src) throws CannotCompileException {
+	public <T> EndpointApiCtClassBuilder makeMethod(final String src) throws CannotCompileException {
 		//创建方法 
 		ctclass.addMethod(CtMethod.make(src, ctclass));
 		return this;
@@ -472,7 +472,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException 
 	 */
-	public <T> JaxwsApiCtClassBuilder newMethod(final Class<T> rtClass, final String methodName, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
+	public <T> EndpointApiCtClassBuilder newMethod(final Class<T> rtClass, final String methodName, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
 		return this.newMethod(new CtWebResult<T>(rtClass), new CtWebMethod(methodName), params);
 	}
 	
@@ -486,7 +486,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException 
 	 */
-	public <T> JaxwsApiCtClassBuilder newMethod(final CtWebResult<T> result, final CtWebMethod method, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
+	public <T> EndpointApiCtClassBuilder newMethod(final CtWebResult<T> result, final CtWebMethod method, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
 	       
 		ConstPool constPool = this.ccFile.getConstPool();
 		
@@ -606,7 +606,7 @@ public class JaxwsApiCtClassBuilder implements Builder<CtClass> {
         return this;
 	}
 	
-	public <T> JaxwsApiCtClassBuilder removeMethod(final String methodName, CtWebParam<?>... params) throws NotFoundException {
+	public <T> EndpointApiCtClassBuilder removeMethod(final String methodName, CtWebParam<?>... params) throws NotFoundException {
 		
 		// 有参方法
 		if(params != null && params.length > 0) {

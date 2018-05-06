@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.0.RELEASE</version>
+		<version>2.0.1.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -365,8 +365,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<commons-io.version>2.5</commons-io.version>
-		<cxf.version>3.2.2</cxf.version>
-		<cxf-starter.version>3.2.2</cxf-starter.version>
+		<cxf.version>3.2.4</cxf.version>
+		<fastjson.version>1.2.47</fastjson.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -390,10 +390,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>test</scope>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-simple</artifactId>
+		    <scope>test</scope>
 		</dependency>
 
 		<!-- Core starter, including auto-configuration support, logging and YAML -->
@@ -448,22 +449,32 @@
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
-			<version>${cxf-starter.version}</version>
+			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-js</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/org.apache.cxf/cxf-rt-frontend-jaxws -->
-<dependency>
-    <groupId>org.apache.cxf</groupId>
-    <artifactId>cxf-rt-frontend-jaxws</artifactId>
-    <version>3.2.4</version>
-</dependency>
-		
-		
+		<!-- cxf-validator -->
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>6.0.9.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>javax.el</groupId>
+		    <artifactId>javax.el-api</artifactId>
+		    <version>3.0.1-b04</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.glassfish</groupId>
+		    <artifactId>javax.el</artifactId>
+		</dependency>
 		<!-- cxf-rt-security -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
@@ -487,32 +498,10 @@
 			<artifactId>cxf-rt-bindings-xml</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-bindings-corba</artifactId>
-			<version>${cxf.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-bindings-coloc</artifactId>
-			<version>${cxf.version}</version>
-			<optional>true</optional>
-		</dependency>
 		<!-- cxf-rt-ws -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-ws-addr</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-ws-eventing</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-ws-mex</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
@@ -525,16 +514,6 @@
 			<artifactId>cxf-rt-ws-transfer</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-wsdl</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-ws-policy</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
 		<!-- cxf-rt-ws-security -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
@@ -542,6 +521,13 @@
 			<version>${cxf.version}</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-security-sso-saml</artifactId>
+			<version>${cxf.version}</version>
+			<optional>true</optional>
+		</dependency>
+		
 		<!-- cxf-rt-features -->	
 		<dependency>
 		    <groupId>org.apache.cxf</groupId>
@@ -563,9 +549,26 @@
 		    <groupId>org.apache.cxf</groupId>
 		    <artifactId>cxf-rt-features-logging</artifactId>
 		    <version>${cxf.version}</version>
-		    <scope>test</scope>
 		</dependency>
-
+		<dependency>
+		    <groupId>org.apache.cxf</groupId>
+		    <artifactId>cxf-rt-management</artifactId>
+		    <version>${cxf.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>${fastjson.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.3</version>
+		</dependency>
+		
 	</dependencies>
 
 </project>

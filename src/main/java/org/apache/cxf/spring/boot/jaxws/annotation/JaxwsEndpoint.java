@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented	
 @Inherited
-public @interface WebServiceEndpoint {
+public @interface JaxwsEndpoint {
 	
 	String addr();
 	
@@ -34,10 +34,12 @@ public @interface WebServiceEndpoint {
 
 	String[] outInterceptors() default {""};
 	
-	String[] inFaultInterceptors() default {""};
+	String[] inFaults() default {""};
 
-	String[] outFaultInterceptors() default {""};
+	String[] outFaults() default {""};
 	
 	String[] features() default {""};
+	
+	String[] handlers() default {""};
 	
 }
