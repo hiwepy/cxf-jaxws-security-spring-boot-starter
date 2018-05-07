@@ -2,10 +2,10 @@ package org.apache.cxf.spring.boot;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(CxfJaxwsProperties2.PREFIX)
-public class CxfJaxwsProperties2 {
+@ConfigurationProperties(CxfJaxwsManagerProperties.PREFIX)
+public class CxfJaxwsManagerProperties {
 
-	public static final String PREFIX = "cxf.jmx";
+	public static final String PREFIX = "cxf.manager";
 
 	/**
 	 * If the JMX integration should be enabled or not

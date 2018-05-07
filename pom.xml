@@ -451,51 +451,10 @@
 			<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-js</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<!-- cxf-validator -->
-		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-validator</artifactId>
-		    <version>6.0.9.Final</version>
-		</dependency>
-		<dependency>
-		    <groupId>javax.validation</groupId>
-		    <artifactId>validation-api</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>javax.el</groupId>
-		    <artifactId>javax.el-api</artifactId>
-		    <version>3.0.1-b04</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.glassfish</groupId>
-		    <artifactId>javax.el</artifactId>
-		</dependency>
 		<!-- cxf-rt-security -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-security</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-security-saml</artifactId>
-			<version>${cxf.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<!-- cxf-rt-bindings -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-bindings-soap</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-bindings-xml</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
 		<!-- cxf-rt-ws -->
@@ -504,30 +463,38 @@
 			<artifactId>cxf-rt-ws-eventing</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-ws-rm</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
+		 
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-ws-transfer</artifactId>
 			<version>${cxf.version}</version>
 		</dependency>
+		
 		<!-- cxf-rt-ws-security -->
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-ws-security</artifactId>
 			<version>${cxf.version}</version>
 			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>org.opensaml</groupId>
+					<artifactId>opensaml-xacml-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.opensaml</groupId>
+					<artifactId>opensaml-xacml-saml-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.opensaml</groupId>
+					<artifactId>opensaml-saml-impl</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.geronimo.javamail</groupId>
+					<artifactId>geronimo-javamail_1.4_mail</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-rs-security-sso-saml</artifactId>
-			<version>${cxf.version}</version>
-			<optional>true</optional>
-		</dependency>
-		
 		<!-- cxf-rt-features -->	
 		<dependency>
 		    <groupId>org.apache.cxf</groupId>
@@ -540,12 +507,6 @@
 		    <version>${cxf.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-features-throttling</artifactId>
-			<version>${cxf.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 		    <groupId>org.apache.cxf</groupId>
 		    <artifactId>cxf-rt-features-logging</artifactId>
 		    <version>${cxf.version}</version>
@@ -555,6 +516,7 @@
 		    <artifactId>cxf-rt-management</artifactId>
 		    <version>${cxf.version}</version>
 		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
 		<dependency>
 		    <groupId>com.alibaba</groupId>
@@ -562,13 +524,8 @@
 		    <version>${fastjson.version}</version>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
-		<dependency>
-		    <groupId>commons-beanutils</groupId>
-		    <artifactId>commons-beanutils</artifactId>
-		    <version>1.9.3</version>
-		</dependency>
 		
+				
 	</dependencies>
 
 </project>

@@ -24,10 +24,13 @@ import javax.xml.ws.handler.Handler;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.ServerImpl;
+import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
+import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.spring.boot.jaxws.callback.DefaultEndpointCallback;
+import org.apache.cxf.validation.BeanValidationFeature;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 
 /**
@@ -43,10 +46,13 @@ public class EndpointApiTemplate {
 	private ConcurrentMap<String, Interceptor> interceptors = new ConcurrentHashMap<String, Interceptor>();
 	private Bus bus;
 	private EndpointCallback callback;
+	private LoggingFeature loggingFeature;
+	private MetricsFeature metricsFeature;
+	private BeanValidationFeature validationFeature;
 
 	public EndpointApiTemplate(Bus bus) {
 		this.bus = bus;
-		this.callback = new DefaultEndpointCallback(features, handlers, interceptors);
+		this.callback = new DefaultEndpointCallback(features, handlers, interceptors, loggingFeature, metricsFeature, validationFeature);
 	}
 
 	/**
@@ -150,6 +156,29 @@ public class EndpointApiTemplate {
 	public void addHandler(String name, Handler handler) {
 		this.handlers.put(name, handler);
 	}
+	
+	public LoggingFeature getLoggingFeature() {
+		return loggingFeature;
+	}
 
+	public void setLoggingFeature(LoggingFeature loggingFeature) {
+		this.loggingFeature = loggingFeature;
+	}
 
+	public MetricsFeature getMetricsFeature() {
+		return metricsFeature;
+	}
+
+	public void setMetricsFeature(MetricsFeature metricsFeature) {
+		this.metricsFeature = metricsFeature;
+	}
+
+	public BeanValidationFeature getValidationFeature() {
+		return validationFeature;
+	}
+
+	public void setValidationFeature(BeanValidationFeature validationFeature) {
+		this.validationFeature = validationFeature;
+	}
+	
 }

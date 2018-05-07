@@ -15,6 +15,7 @@
  */
 package org.apache.cxf.spring.boot.jaxws.callback;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.ws.Endpoint;
@@ -26,17 +27,17 @@ import org.apache.cxf.ext.logging.LoggingOutInterceptor;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
+import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.spring.boot.jaxws.EndpointCallback;
 import org.apache.cxf.spring.boot.jaxws.annotation.JaxwsEndpoint;
-import org.apache.cxf.transport.common.gzip.GZIPFeature;
-import org.apache.cxf.ws.addressing.WSAddressingFeature;
-import org.apache.cxf.ws.policy.WSPolicyFeature;
+import org.apache.cxf.validation.BeanValidationFeature;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
  * TODO
- * @author 		： <a href="https://github.com/vindell">vindell</a>
+ * 
+ * @author ： <a href="https://github.com/vindell">vindell</a>
  */
 @SuppressWarnings("rawtypes")
 public class DefaultEndpointCallback implements EndpointCallback {
@@ -44,26 +45,33 @@ public class DefaultEndpointCallback implements EndpointCallback {
 	private ConcurrentMap<String, Feature> features = null;
 	private ConcurrentMap<String, Handler> handlers = null;
 	private ConcurrentMap<String, Interceptor> interceptors = null;
-	
+	private LoggingFeature loggingFeature;
+	private MetricsFeature metricsFeature;
+	private BeanValidationFeature validationFeature;
+
 	/**
 	 * TODO
-	 * @author 		: <a href="https://github.com/vindell">vindell</a>
+	 * 
+	 * @author : <a href="https://github.com/vindell">vindell</a>
 	 * @param features
 	 * @param handlers
 	 * @param interceptors
 	 */
-	public DefaultEndpointCallback(ConcurrentMap<String, Feature> features, 
-			ConcurrentMap<String, Handler> handlers,
-			ConcurrentMap<String, Interceptor> interceptors) {
+	public DefaultEndpointCallback(ConcurrentMap<String, Feature> features, ConcurrentMap<String, Handler> handlers,
+			ConcurrentMap<String, Interceptor> interceptors, LoggingFeature loggingFeature,
+			MetricsFeature metricsFeature, BeanValidationFeature validationFeature) {
 		this.features = features;
 		this.handlers = handlers;
 		this.interceptors = interceptors;
+		this.loggingFeature = loggingFeature;
+		this.metricsFeature = metricsFeature;
+		this.validationFeature = validationFeature;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Endpoint doCallback(Object implementor, EndpointImpl endpoint) {
-		
+
 		// 查找该实现上的自定义注解
 		JaxwsEndpoint annotationType = AnnotationUtils.findAnnotation(implementor.getClass(), JaxwsEndpoint.class);
 		if (annotationType != null) {
@@ -112,15 +120,14 @@ public class DefaultEndpointCallback implements EndpointCallback {
 				}
 			}
 		} else {
-			
+
 			endpoint.getInInterceptors().add(new LoggingInInterceptor());
 			endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
-			endpoint.getFeatures().add(new LoggingFeature());
-			endpoint.getFeatures().add(new GZIPFeature());
-			endpoint.getFeatures().add(new WSPolicyFeature());
 			
+			endpoint.getFeatures().addAll(Arrays.asList(metricsFeature, loggingFeature, validationFeature));
+
 		}
-		
+
 		return endpoint;
 	}
 
