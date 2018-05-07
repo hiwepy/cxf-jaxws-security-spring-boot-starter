@@ -9,8 +9,21 @@ public class CxfJaxwsProperties {
 
 	public static final String PREFIX = "cxf.jaxws";
 
+	/**
+	 * If the Cxf Jaxws should be enabled or not
+	 */
+	private boolean enabled = false;
+
 	@NestedConfigurationProperty
 	private LoggingFeatureProperty loggingFeature = new LoggingFeatureProperty();
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public LoggingFeatureProperty getLoggingFeature() {
 		return loggingFeature;

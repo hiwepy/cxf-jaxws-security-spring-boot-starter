@@ -3,6 +3,4 @@ cxf:
     enabled: true
     saml:
       enabled: true
-      ehcache: 
-        config-file-url: 
       
