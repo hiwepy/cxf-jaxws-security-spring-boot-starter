@@ -12,8 +12,9 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 
 import org.apache.commons.lang3.builder.Builder;
-import org.apache.cxf.spring.boot.utils.JavassistUtils;
 import org.springframework.util.StringUtils;
+
+import com.github.vindell.javassist.utils.JavassistUtils;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;

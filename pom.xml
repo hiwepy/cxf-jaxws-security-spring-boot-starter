@@ -438,11 +438,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
+		
 		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>${javassist.version}</version>
+			<groupId>com.github.vindell</groupId>
+			<artifactId>javassist-plus</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- CXF-Jaxws Spring Boot Starter -->
