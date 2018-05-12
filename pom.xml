@@ -374,6 +374,7 @@
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.21.0</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
+		<metrics.version>4.0.2</metrics.version>
 		<javassist.version>3.22.0-GA</javassist.version>
 	</properties>
 
@@ -505,6 +506,11 @@
 		    <groupId>org.apache.cxf</groupId>
 		    <artifactId>cxf-rt-features-metrics</artifactId>
 		    <version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.dropwizard.metrics</groupId>
+		    <artifactId>metrics-core</artifactId>
+		    <version>${metrics.version}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.cxf</groupId>
