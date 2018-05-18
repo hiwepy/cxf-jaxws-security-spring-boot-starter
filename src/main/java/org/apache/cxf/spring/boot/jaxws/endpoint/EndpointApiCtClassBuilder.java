@@ -2,41 +2,29 @@ package org.apache.cxf.spring.boot.jaxws.endpoint;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebParam.Mode;
-import javax.jws.WebResult;
-import javax.jws.WebService;
 
 import org.apache.commons.lang3.builder.Builder;
-import org.apache.cxf.spring.boot.jaxws.annotation.WebBound;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapBound;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapMethod;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapParam;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapResult;
-import org.springframework.util.StringUtils;
+import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapService;
+import org.apache.cxf.spring.boot.jaxws.utils.EndpointApiUtils;
 
 import com.github.vindell.javassist.utils.JavassistUtils;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtMethod;
+import javassist.CtNewConstructor;
 import javassist.Modifier;
 import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
-import javassist.bytecode.ParameterAnnotationsAttribute;
 import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.BooleanMemberValue;
-import javassist.bytecode.annotation.EnumMemberValue;
-import javassist.bytecode.annotation.StringMemberValue;
 
 /**
  * 
@@ -49,9 +37,9 @@ import javassist.bytecode.annotation.StringMemberValue;
 public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	
 	// 构建动态类
-	private ClassPool pool = null;
-	private CtClass ctclass  = null;
-	private ClassFile ccFile = null;
+	protected ClassPool pool = null;
+	protected CtClass declaring  = null;
+	protected ClassFile ccFile = null;
 	//private Loader loader = new Loader(pool);
 	
 	public EndpointApiCtClassBuilder(final String classname) throws CannotCompileException, NotFoundException  {
@@ -61,23 +49,16 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	public EndpointApiCtClassBuilder(final ClassPool pool, final String classname) throws CannotCompileException, NotFoundException {
 		
 		this.pool = pool;
-		this.ctclass = this.pool.getOrNull(classname);
-		if( null == this.ctclass) {
-			this.ctclass = this.pool.makeClass(classname);
-		}
+		this.declaring = EndpointApiUtils.makeClass(pool, classname);
 		
 		/* 获得 JaxwsHandler 类作为动态类的父类 */
 		CtClass superclass = pool.get(EndpointApi.class.getName());
-		ctclass.setSuperclass(superclass);
+		declaring.setSuperclass(superclass);
 		
 		// 默认添加无参构造器  
-		CtConstructor cons = new CtConstructor(null, ctclass);  
-		cons.setBody("{}");  
-		ctclass.addConstructor(cons);
+		declaring.addConstructor(CtNewConstructor.defaultConstructor(superclass));
 		
-		// 当 ClassPool.doPruning=true的时候，Javassist 在CtClass object被冻结时，会释放存储在ClassPool对应的数据。这样做可以减少javassist的内存消耗。默认情况ClassPool.doPruning=false。
-		this.ctclass.stopPruning(true);
-		this.ccFile = this.ctclass.getClassFile();
+		this.ccFile = this.declaring.getClassFile();
 	}
 	
 	/**
@@ -106,49 +87,31 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	 */
 	public EndpointApiCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName,
 			String portName, String wsdlLocation, String endpointInterface) {
+		return annotationForType(new SoapService(name, targetNamespace, serviceName, portName, wsdlLocation, endpointInterface));
+	}
+	
+	public EndpointApiCtClassBuilder annotationForType(final SoapService service) {
 
 		ConstPool constPool = this.ccFile.getConstPool();
-		
 		// 添加类注解 @WebService 
 		AnnotationsAttribute classAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-		Annotation ws = new Annotation(WebService.class.getName(), constPool);
-		ws.addMemberValue("name", new StringMemberValue(name, constPool));
-		ws.addMemberValue("targetNamespace", new StringMemberValue(targetNamespace, constPool));
-		if (StringUtils.hasText(serviceName)) {
-			ws.addMemberValue("serviceName", new StringMemberValue(serviceName, constPool));
-		}
-		if (StringUtils.hasText(portName)) {
-			ws.addMemberValue("portName", new StringMemberValue(portName, constPool));
-		}
-		if (StringUtils.hasText(wsdlLocation)) {
-			ws.addMemberValue("wsdlLocation", new StringMemberValue(wsdlLocation, constPool));
-		}
-		if (StringUtils.hasText(endpointInterface)) {
-			ws.addMemberValue("endpointInterface", new StringMemberValue(endpointInterface, constPool));
-		}
-		classAttr.addAnnotation(ws);
+		Annotation annot = EndpointApiUtils.annotWebService(constPool, service);
+		classAttr.addAnnotation(annot);
 		ccFile.addAttribute(classAttr);
 		
 		return this;
 	}
 	
+	
 	/**
 	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
-	 * TODO
-	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @param uid
-	 * @param json
-	 * @return
 	 */
-	public EndpointApiCtClassBuilder bindDataForType(final String uid, final String json) {
+	public EndpointApiCtClassBuilder annotationForType(final SoapBound bound) {
 
 		ConstPool constPool = this.ccFile.getConstPool();
 		// 添加类注解 @WebBound
 		AnnotationsAttribute classAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-		Annotation bound = new Annotation(WebBound.class.getName(), constPool);
-		bound.addMemberValue("uid", new StringMemberValue(uid, constPool));
-		bound.addMemberValue("json", new StringMemberValue(json, constPool));
-		classAttr.addAnnotation(bound);
+		classAttr.addAnnotation(EndpointApiUtils.annotWebBound(constPool, bound));
 		ccFile.addAttribute(classAttr);
 		
 		return this;
@@ -169,23 +132,23 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
      */
 	public <T> EndpointApiCtClassBuilder makeField(final String src) throws CannotCompileException {
 		//创建属性
-        ctclass.addField(CtField.make(src, ctclass));
+        declaring.addField(CtField.make(src, declaring));
 		return this;
 	}
 	
 	public <T> EndpointApiCtClassBuilder newField(final Class<T> fieldClass, final String fieldName, final String fieldValue) throws CannotCompileException, NotFoundException {
 		
 		// 检查字段是否已经定义
-		if(JavassistUtils.hasField(ctclass, fieldName)) {
+		if(JavassistUtils.hasField(declaring, fieldName)) {
 			return this;
 		}
 		
 		/** 添加属性字段 */
-		CtField field = new CtField(this.pool.get(fieldClass.getName()), fieldName, ctclass);
-        field.setModifiers(Modifier.PRIVATE);
+		CtField field = new CtField(this.pool.get(fieldClass.getName()), fieldName, declaring);
+        field.setModifiers(Modifier.PROTECTED);
 
         //新增Field
-        ctclass.addField(field, "\"" + fieldValue + "\"");
+        declaring.addField(field, "\"" + fieldValue + "\"");
         
 		return this;
 	}
@@ -193,11 +156,11 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	public <T> EndpointApiCtClassBuilder removeField(final String fieldName) throws NotFoundException {
 		
 		// 检查字段是否已经定义
-		if(!JavassistUtils.hasField(ctclass, fieldName)) {
+		if(!JavassistUtils.hasField(declaring, fieldName)) {
 			return this;
 		}
 		
-		ctclass.removeField(ctclass.getDeclaredField(fieldName));
+		declaring.removeField(declaring.getDeclaredField(fieldName));
 		
 		return this;
 	}
@@ -214,7 +177,7 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
      */
 	public <T> EndpointApiCtClassBuilder makeMethod(final String src) throws CannotCompileException {
 		//创建方法 
-		ctclass.addMethod(CtMethod.make(src, ctclass));
+		declaring.addMethod(CtMethod.make(src, declaring));
 		return this;
 	}
 	
@@ -262,131 +225,27 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	       
 		ConstPool constPool = this.ccFile.getConstPool();
 		
+		CtClass returnType = result != null ? pool.get(result.getRtClass().getName()) : CtClass.voidType;
 		CtMethod ctMethod = null;
-		// 参数模式定义
-		Map<String, EnumMemberValue> modeMap = new HashMap<String, EnumMemberValue>();
+		// 方法参数
+		CtClass[] parameters = EndpointApiUtils.makeParams(pool, params);
 		// 有参方法
-		if(params != null && params.length > 0) {
-			
-			// 方法参数
-			CtClass[] paramTypes = new CtClass[params.length];
-			for(int i = 0;i < params.length; i++) {
-				paramTypes[i] = this.pool.get(params[i].getType().getName());
-				if(!modeMap.containsKey(params[i].getMode().name())) {
-					
-					EnumMemberValue modeEnum = new EnumMemberValue(constPool);
-			        modeEnum.setType(Mode.class.getName());
-			        modeEnum.setValue(params[i].getMode().name());
-					
-					modeMap.put(params[i].getMode().name(), modeEnum);
-				}
-			}
-			
-			// 构造方法
-			ctMethod = new CtMethod(this.pool.get(result.getRtClass().getName()), method.getOperationName(), paramTypes, ctclass);
-			ctMethod.setModifiers(Modifier.PUBLIC); 
-			
+		if(parameters != null && parameters.length > 0) {
+			ctMethod = new CtMethod(returnType, method.getOperationName(), parameters, declaring);
 		} 
-		/**无参方法 */
+		// 无参方法 
 		else {
-			
-			ctMethod = new CtMethod(pool.get(result.getRtClass().getName()), method.getOperationName() , null, ctclass);
-			ctMethod.setModifiers(Modifier.PUBLIC);
-			
+			ctMethod = new CtMethod(returnType, method.getOperationName() , null, declaring);
 		}
-		
-		// 构造方法体
-		StringBuilder body = new StringBuilder(); 
-        body.append("{\n");
-        	body.append("if(getHandler() != null){\n");
-        		body.append("Method method = this.getClass().getDeclaredMethod(\"" + method.getOperationName() + "\", $sig);");
-        		body.append("return ($r)getHandler().invoke($0, method, $args);");
-        	body.append("}\n"); 
-	        body.append("return null;\n");
-        body.append("}"); 
-        // 将方法的内容设置为要写入的代码，当方法被 abstract修饰时，该修饰符被移除。
-        ctMethod.setBody(body.toString());
-        
-        // 构造异常处理逻辑
-        CtClass etype = pool.get("java.lang.Exception");
-        ctMethod.addCatch("{ System.out.println($e); throw $e; }", etype);
-        
-        // 添加方法注解
-        AnnotationsAttribute methodAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-       
-        // 添加 @WebMethod 注解	        
-        Annotation methodAnnot = new Annotation(WebMethod.class.getName(), constPool);
-        methodAnnot.addMemberValue("operationName", new StringMemberValue(method.getOperationName(), constPool));
-        if (StringUtils.hasText(method.getAction())) {
-        	methodAnnot.addMemberValue("action", new StringMemberValue(method.getAction(), constPool));
-        }
-        methodAnnot.addMemberValue("exclude", new BooleanMemberValue(method.isExclude(), constPool));
-        
-        methodAttr.addAnnotation(methodAnnot);
-        
-        // 添加 @WebResult 注解
-        if (StringUtils.hasText(result.getName())) {
-        	
-        	Annotation resultAnnot = new Annotation(WebResult.class.getName(), constPool);
-	        resultAnnot.addMemberValue("name", new StringMemberValue(result.getName(), constPool));
-	        if (StringUtils.hasText(result.getPartName())) {
-	        	resultAnnot.addMemberValue("partName", new StringMemberValue(result.getPartName(), constPool));
-	        }
-	        if (StringUtils.hasText(result.getTargetNamespace())) {
-	        	resultAnnot.addMemberValue("targetNamespace", new StringMemberValue(result.getTargetNamespace(), constPool));
-	        }
-	        resultAnnot.addMemberValue("header", new BooleanMemberValue(result.isHeader(), constPool));
-	        
-	        methodAttr.addAnnotation(resultAnnot);
-	        
-        }
-        
-        // 添加 @WebBound 注解
-        if (bound != null) {
-        	
-        	Annotation resultBound = new Annotation(WebBound.class.getName(), constPool);
-	        resultBound.addMemberValue("uid", new StringMemberValue(bound.getUid(), constPool));
-	        if (StringUtils.hasText(bound.getJson())) {
-	        	resultBound.addMemberValue("json", new StringMemberValue(bound.getJson(), constPool));
-	        }
-	        methodAttr.addAnnotation(resultBound);
-	        
-        }
-        
-        
-        ctMethod.getMethodInfo().addAttribute(methodAttr);
-        
-        // 添加 @WebParam 参数注解
-        if(params != null && params.length > 0) {
-        	
-        	ParameterAnnotationsAttribute parameterAtrribute = new ParameterAnnotationsAttribute(constPool, ParameterAnnotationsAttribute.visibleTag);
-            Annotation[][] paramArrays = new Annotation[params.length][1];
-            
-            Annotation paramAnnot = null;
-            for(int i = 0;i < params.length; i++) {
-            	
-            	paramAnnot = new Annotation(WebParam.class.getName(), constPool);
-                paramAnnot.addMemberValue("name", new StringMemberValue(params[i].getName(), constPool));
-                if (StringUtils.hasText(params[i].getPartName())) {
-                	paramAnnot.addMemberValue("partName", new StringMemberValue(params[i].getPartName(), constPool));
-        		}
-                paramAnnot.addMemberValue("targetNamespace", new StringMemberValue(params[i].getTargetNamespace(), constPool));
-                paramAnnot.addMemberValue("mode", modeMap.get(params[i].getMode().name()));
-                if(params[i].isHeader()) {
-                	 paramAnnot.addMemberValue("header", new BooleanMemberValue(true, constPool));
-                }
-                
-                paramArrays[i][0] = paramAnnot;
-                
-            }
-            
-            parameterAtrribute.setAnnotations(paramArrays);
-            ctMethod.getMethodInfo().addAttribute(parameterAtrribute);
-            
-        }
+        // 设置方法体
+        EndpointApiUtils.methodBody(ctMethod, method);
+        // 设置方法异常捕获逻辑
+        EndpointApiUtils.methodBody(ctMethod, method);
+        // 为方法添加 @WebMethod、 @WebResult、@WebBound、@WebParam 注解
+        EndpointApiUtils.methodAnnotations(ctMethod, constPool, result, method, bound, params);
         
         //新增方法
-        ctclass.addMethod(ctMethod);
+        declaring.addMethod(ctMethod);
         
         return this;
 	}
@@ -397,27 +256,24 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 		if(params != null && params.length > 0) {
 			
 			// 方法参数
-			CtClass[] paramTypes = new CtClass[params.length];
-			for(int i = 0;i < params.length; i++) {
-				paramTypes[i] = this.pool.get(params[i].getType().getName());
-			}
+			CtClass[] parameters = EndpointApiUtils.makeParams(pool, params);
 			
 			// 检查方法是否已经定义
-			if(!JavassistUtils.hasMethod(ctclass, methodName, paramTypes)) {
+			if(!JavassistUtils.hasMethod(declaring, methodName, parameters)) {
 				return this;
 			}
 			
-			ctclass.removeMethod(ctclass.getDeclaredMethod(methodName, paramTypes));
+			declaring.removeMethod(declaring.getDeclaredMethod(methodName, parameters));
 			
 		}
 		else {
 			
 			// 检查方法是否已经定义
-			if(!JavassistUtils.hasMethod(ctclass, methodName)) {
+			if(!JavassistUtils.hasMethod(declaring, methodName)) {
 				return this;
 			}
 			
-			ctclass.removeMethod(ctclass.getDeclaredMethod(methodName));
+			declaring.removeMethod(declaring.getDeclaredMethod(methodName));
 			
 		}
 		
@@ -426,7 +282,7 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	
 	@Override
 	public CtClass build() {
-        return ctclass;
+        return declaring;
 	}
 	
 	/**
@@ -439,26 +295,23 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	public Class<?> toClass() throws CannotCompileException {
         try {
         	// 通过类加载器加载该CtClass
-			return ctclass.toClass();
+			return declaring.toClass();
 		} finally {
 			// 将该class从ClassPool中删除
-			ctclass.detach();
+			declaring.detach();
 		} 
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Object toInstance(final InvocationHandler handler) throws CannotCompileException, NotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         try {
-        	// 添加有参构造器，注入回调接口
-			CtConstructor cc = new CtConstructor(new CtClass[] { pool.get(InvocationHandler.class.getName()) }, ctclass);
-			cc.setBody("{super($1);}");
-			ctclass.addConstructor(cc);
-			// proxy.writeFile();
+        	// 设置InvocationHandler参数构造器
+			declaring.addConstructor(EndpointApiUtils.makeConstructor(pool, declaring));
 			// 通过类加载器加载该CtClass，并通过构造器初始化对象
-			return ctclass.toClass().getConstructor(InvocationHandler.class).newInstance(handler);
+			return declaring.toClass().getConstructor(InvocationHandler.class).newInstance(handler);
 		} finally {
 			// 将该class从ClassPool中删除
-			ctclass.detach();
+			declaring.detach();
 		} 
 	}
 
