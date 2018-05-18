@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, vindell (https://github.com/vindell).
+ * Copyright (c) 2018, vindell (https://github.com/vindell).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,24 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.cxf.spring.boot.jaxws;
+package org.apache.cxf.spring.boot.jaxws.endpoint;
 
-import java.lang.reflect.InvocationHandler;
+import javax.xml.ws.Endpoint;
 
-public abstract class EndpointApi {
+import org.apache.cxf.jaxws.EndpointImpl;
 
-	private InvocationHandler handler;
-	
-	public EndpointApi() {
-	}
-	
-	public EndpointApi(InvocationHandler handler) {
-		this.handler = handler;
-	}
+/**
+ * TODO
+ * @author 		： <a href="https://github.com/vindell">vindell</a>
+ */
+public interface EndpointCallback {
 
-	public InvocationHandler getHandler() {
-		return handler;
-	}
-	
+	/**
+	 * Endpoint 初始化 后的回调
+	 * @author 		： <a href="https://github.com/vindell">vindell</a>
+	 * @param endpoint
+	 * @return
+	 */
+	Endpoint doCallback(Object implementor, EndpointImpl endpoint);
 	
 }

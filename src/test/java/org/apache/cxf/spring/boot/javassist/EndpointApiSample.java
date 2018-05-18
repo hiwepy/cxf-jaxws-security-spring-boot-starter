@@ -22,7 +22,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-import org.apache.cxf.spring.boot.jaxws.EndpointApi;
+import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointApi;
 
 @WebService(serviceName = "sample", // 与接口中指定的name一致
 		targetNamespace = "http://ws.cxf.com/"// , // 与接口中的命名空间一致,一般是接口的包名倒

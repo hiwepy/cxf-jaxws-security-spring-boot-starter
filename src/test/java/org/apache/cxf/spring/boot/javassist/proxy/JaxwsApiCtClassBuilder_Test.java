@@ -9,8 +9,8 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.cxf.spring.boot.jaxws.EndpointApiCtClassBuilder;
-import org.apache.cxf.spring.boot.jaxws.EndpointApiCtClassBuilder.CtWebParam;
+import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointApiCtClassBuilder;
+import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapParam;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -105,8 +105,8 @@ public class JaxwsApiCtClassBuilder_Test {
 				.annotationForType("get", "http://ws.cxf.com", "getxx")
 				.makeField("public int k = 3;")
 				.newField(String.class, "uid", UUID.randomUUID().toString())
-				.newMethod(String.class, "sayHello", new CtWebParam(String.class, "text"))
-				.newMethod(String.class, "sayHello2", new CtWebParam(String.class, "text"))
+				.newMethod(String.class, "sayHello", new SoapParam(String.class, "text"))
+				.newMethod(String.class, "sayHello2", new SoapParam(String.class, "text"))
 				.toInstance(handler);
 		
 		Class clazz = ctObject.getClass();

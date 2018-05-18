@@ -1,4 +1,4 @@
-package org.apache.cxf.spring.boot.jaxws;
+package org.apache.cxf.spring.boot.jaxws.endpoint;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +12,11 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 
 import org.apache.commons.lang3.builder.Builder;
+import org.apache.cxf.spring.boot.jaxws.annotation.WebBound;
+import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapBound;
+import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapMethod;
+import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapParam;
+import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapResult;
 import org.springframework.util.StringUtils;
 
 import com.github.vindell.javassist.utils.JavassistUtils;
@@ -35,8 +40,7 @@ import javassist.bytecode.annotation.StringMemberValue;
 
 /**
  * 
- * @className	： EndpointApiCtClassBuilder
- * @description	：动态构建ws接口
+ * 动态构建ws接口
  * @see http://www.cnblogs.com/sunfie/p/5154246.html
  * @see http://blog.csdn.net/youaremoon/article/details/50766972
  * @see https://my.oschina.net/GameKing/blog/794580
@@ -129,6 +133,28 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	}
 	
 	/**
+	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
+	 * TODO
+	 * @author 		： <a href="https://github.com/vindell">vindell</a>
+	 * @param uid
+	 * @param json
+	 * @return
+	 */
+	public EndpointApiCtClassBuilder bindDataForType(final String uid, final String json) {
+
+		ConstPool constPool = this.ccFile.getConstPool();
+		// 添加类注解 @WebBound
+		AnnotationsAttribute classAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		Annotation bound = new Annotation(WebBound.class.getName(), constPool);
+		bound.addMemberValue("uid", new StringMemberValue(uid, constPool));
+		bound.addMemberValue("json", new StringMemberValue(json, constPool));
+		classAttr.addAnnotation(bound);
+		ccFile.addAttribute(classAttr);
+		
+		return this;
+	}
+	
+	/**
      * Compiles the given source code and creates a field.
      * Examples of the source code are:
      * 
@@ -193,279 +219,8 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	}
 	
 	/**
-	 * @className	： CtWebMethod
-	 * @description	： 注释表示作为一项 Web Service 操作的方法，将此注释应用于客户机或服务器服务端点接口（SEI）上的方法，或者应用于 JavaBeans 端点的服务器端点实现类。
-	 * 要点： 仅支持在使用 @WebService 注释来注释的类上使用 @WebMethod 注释
-	 * https://www.cnblogs.com/zhao-shan/p/5515174.html
-	 */
-	public static class CtWebMethod {
-	    
-	    public CtWebMethod() {
-		}
-	    
-	    public CtWebMethod(String operationName) {
-			this.operationName = operationName;
-		}
-	    
-		public CtWebMethod(String operationName, String action, boolean exclude) {
-			this.operationName = operationName;
-			this.action = action;
-			this.exclude = exclude;
-		}
-
-		/**
-		 * 1、operationName：指定与此方法相匹配的wsdl:operation 的名称。缺省值为 Java 方法的名称。（字符串）
-		 */
-		private String operationName = "";
-
-		/**
-		 * 2、action：定义此操作的行为。对于 SOAP 绑定，此值将确定 SOAPAction 头的值。缺省值为 Java 方法的名称。（字符串）
-		 */
-		private String action = "";
-
-		/**
-		 * 3、exclude：指定是否从 Web Service 中排除某一方法。缺省值为 false。（布尔值）  
-		 */
-		private boolean exclude = false;
-
-		public String getOperationName() {
-			return operationName;
-		}
-
-		public void setOperationName(String operationName) {
-			this.operationName = operationName;
-		}
-
-		public String getAction() {
-			return action;
-		}
-
-		public void setAction(String action) {
-			this.action = action;
-		}
-
-		public boolean isExclude() {
-			return exclude;
-		}
-
-		public void setExclude(boolean exclude) {
-			this.exclude = exclude;
-		}
-
-	}
-	
-	
-	/**
-	 * @className	： CtWebParam
-	 * @description	： 注释用于定制从单个参数至 Web Service 消息部件和 XML 元素的映射。将此注释应用于客户机或服务器服务端点接口（SEI）上的方法，或者应用于 JavaBeans 端点的服务器端点实现类。
-	 * https://www.cnblogs.com/zhao-shan/p/5515174.html
-	 */
-	public static class CtWebParam<T> {
-
-		public CtWebParam(Class<T> type, String name) {
-			this.type = type;
-			this.name = name;
-		}
-		
-		public CtWebParam(Class<T> type, String name,boolean header) {
-			this.type = type;
-			this.name = name;
-			this.header = header;
-		}
-		
-		public CtWebParam(Class<T> type, String name,Mode mode) {
-			this.type = type;
-			this.name = name;
-			this.mode = mode;
-		}
-		
-		public CtWebParam(Class<T> type, String name,Mode mode, boolean header) {
-			this.type = type;
-			this.name = name;
-			this.mode = mode;
-			this.header = header;
-		}
-		
-		public CtWebParam(Class<T> type, String name, String partName, String targetNamespace, Mode mode,
-				boolean header) {
-			this.type = type;
-			this.name = name;
-			this.partName = partName;
-			this.targetNamespace = targetNamespace;
-			this.mode = mode;
-			this.header = header;
-		}
-
-		/**
-		 * 参数对象类型
-		 */
-		private Class<T> type;
-		/**
-		 * 1、name ：参数的名称。如果操作是远程过程调用（RPC）类型并且未指定partName 属性，那么这是用于表示参数的 wsdl:part 属性的名称。
-		 * 如果操作是文档类型或者参数映射至某个头，那么 -name 是用于表示该参数的 XML 元素的局部名称。如果操作是文档类型、 参数类型为 BARE
-		 * 并且方式为 OUT 或 INOUT，那么必须指定此属性。（字符串）
-		 */
-		private String name = "";
-		/**
-		 * 2、partName：定义用于表示此参数的 wsdl:part属性的名称。仅当操作类型为 RPC 或者操作是文档类型并且参数类型为BARE
-		 * 时才使用此参数。（字符串）
-		 */
-		private String partName = "";
-		/**
-		 * 3、targetNamespace：指定参数的 XML 元素的 XML 名称空间。当属性映射至 XML 元素时，仅应用于文档绑定。缺省值为 Web
-		 * Service 的 targetNamespace。（字符串）
-		 */
-		private String targetNamespace = "";
-		/**
-		 * 4、mode：此值表示此方法的参数流的方向。有效值为 IN、INOUT 和 OUT。（字符串）
-		 */
-		private javax.jws.WebParam.Mode mode = javax.jws.WebParam.Mode.IN;
-		/**
-		 * 5、header：指定参数是在消息头还是消息体中。缺省值为 false。（布尔值）
-		 */
-		private boolean header = false;
-
-		public Class<T> getType() {
-			return type;
-		}
-
-		public void setType(Class<T> type) {
-			this.type = type;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getPartName() {
-			return partName;
-		}
-
-		public void setPartName(String partName) {
-			this.partName = partName;
-		}
-
-		public String getTargetNamespace() {
-			return targetNamespace;
-		}
-
-		public void setTargetNamespace(String targetNamespace) {
-			this.targetNamespace = targetNamespace;
-		}
-
-		public javax.jws.WebParam.Mode getMode() {
-			return mode;
-		}
-
-		public void setMode(javax.jws.WebParam.Mode mode) {
-			this.mode = mode;
-		}
-
-		public boolean isHeader() {
-			return header;
-		}
-
-		public void setHeader(boolean header) {
-			this.header = header;
-		}
-		
-	}
-	
-	/**
-	 * @className	： CtWebResult
-	 * @description	： 注释用于定制从返回值至 WSDL 部件或 XML 元素的映射。将此注释应用于客户机或服务器服务端点接口（SEI）上的方法，或者应用于 JavaBeans 端点的服务器端点实现类。
-	 * https://www.cnblogs.com/zhao-shan/p/5515174.html
-	 */
-	public static class CtWebResult<T> {
-
-		public CtWebResult(Class<T> rtClass) {
-			this.rtClass = rtClass;
-		}
-		
-		public CtWebResult(Class<T> rtClass, String name, String targetNamespace, boolean header, String partName) {
-			this.rtClass = rtClass;
-			this.name = name;
-			this.targetNamespace = targetNamespace;
-			this.header = header;
-			this.partName = partName;
-		}
-
-		/**
-		 * 返回结果对象类型
-		 */
-		private Class<T> rtClass;
-		
-		/**
-		 * 1、name：当返回值列示在 WSDL 文件中并且在连接上的消息中找到该返回值时，指定该返回值的名称。对于 RPC 绑定，这是用于表示返回值的
-		 * wsdl:part属性的名称。对于文档绑定，-name 参数是用于表示返回值的 XML 元素的局部名。对于 RPC 和 DOCUMENT/WRAPPED
-		 * 绑定，缺省值为 return。对于 DOCUMENT/BARE 绑定，缺省值为方法名 + Response。（字符串）
-		 */
-		private String name = "";
-
-		/**
-		 * 2、targetNamespace：指定返回值的 XML 名称空间。仅当操作类型为 RPC 或者操作是文档类型并且参数类型为 BARE
-		 * 时才使用此参数。（字符串）
-		 */
-		private String targetNamespace = "";
-
-		/**
-		 * 3、header：指定头中是否附带结果。缺省值为false。（布尔值）
-		 */
-		private boolean header = false;
-		/**
-		 * 4、partName：指定 RPC 或 DOCUMENT/BARE 操作的结果的部件名称。缺省值为@WebResult.name。（字符串）
-		 */
-		private String partName = "";
-
-		public Class<T> getRtClass() {
-			return rtClass;
-		}
-
-		public void setRtClass(Class<T> rtClass) {
-			this.rtClass = rtClass;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getTargetNamespace() {
-			return targetNamespace;
-		}
-
-		public void setTargetNamespace(String targetNamespace) {
-			this.targetNamespace = targetNamespace;
-		}
-
-		public boolean isHeader() {
-			return header;
-		}
-
-		public void setHeader(boolean header) {
-			this.header = header;
-		}
-
-		public String getPartName() {
-			return partName;
-		}
-
-		public void setPartName(String partName) {
-			this.partName = partName;
-		}
-
-	}
-	
-	/**
 	 * 
-	 * @description			： 根据参数构造一个新的方法
+	 * 根据参数构造一个新的方法
 	 * @param rtClass 		：方法返回类型
 	 * @param methodName 	：方法名称
 	 * @param params		： 参数信息
@@ -473,21 +228,37 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	 * @throws CannotCompileException
 	 * @throws NotFoundException 
 	 */
-	public <T> EndpointApiCtClassBuilder newMethod(final Class<T> rtClass, final String methodName, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
-		return this.newMethod(new CtWebResult<T>(rtClass), new CtWebMethod(methodName), params);
+	public <T> EndpointApiCtClassBuilder newMethod(final Class<T> rtClass, final String methodName, SoapParam<?>... params) throws CannotCompileException, NotFoundException {
+		return this.newMethod(new SoapResult<T>(rtClass), new SoapMethod(methodName), null, params);
 	}
 	
 	/**
 	 * 
-	 * @description	： 根据参数构造一个新的方法
-	 * @param method ：方法注释信息
+	 * @author 		： <a href="https://github.com/vindell">vindell</a>
+	 * @param rtClass 		：方法返回类型
+	 * @param methodName 	：方法名称
+	 * @param bound			：方法绑定数据信息
+	 * @param params		： 参数信息
+	 * @return
+	 * @throws CannotCompileException
+	 * @throws NotFoundException
+	 */
+	public <T> EndpointApiCtClassBuilder newMethod(final Class<T> rtClass, final String methodName, final SoapBound bound, SoapParam<?>... params) throws CannotCompileException, NotFoundException {
+		return this.newMethod(new SoapResult<T>(rtClass), new SoapMethod(methodName), bound, params);
+	}
+	
+	/**
+	 * 
+	 * 根据参数构造一个新的方法
 	 * @param result ：返回结果信息
+	 * @param method ：方法注释信息
+	 * @param bound  ：方法绑定数据信息
 	 * @param params ： 参数信息
 	 * @return
 	 * @throws CannotCompileException
 	 * @throws NotFoundException 
-	 */
-	public <T> EndpointApiCtClassBuilder newMethod(final CtWebResult<T> result, final CtWebMethod method, CtWebParam<?>... params) throws CannotCompileException, NotFoundException {
+	 */ 
+	public <T> EndpointApiCtClassBuilder newMethod(final SoapResult<T> result, final SoapMethod method, final SoapBound bound, SoapParam<?>... params) throws CannotCompileException, NotFoundException {
 	       
 		ConstPool constPool = this.ccFile.getConstPool();
 		
@@ -570,9 +341,22 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	        
         }
         
+        // 添加 @WebBound 注解
+        if (bound != null) {
+        	
+        	Annotation resultBound = new Annotation(WebBound.class.getName(), constPool);
+	        resultBound.addMemberValue("uid", new StringMemberValue(bound.getUid(), constPool));
+	        if (StringUtils.hasText(bound.getJson())) {
+	        	resultBound.addMemberValue("json", new StringMemberValue(bound.getJson(), constPool));
+	        }
+	        methodAttr.addAnnotation(resultBound);
+	        
+        }
+        
+        
         ctMethod.getMethodInfo().addAttribute(methodAttr);
         
-        // 添加参数注解
+        // 添加 @WebParam 参数注解
         if(params != null && params.length > 0) {
         	
         	ParameterAnnotationsAttribute parameterAtrribute = new ParameterAnnotationsAttribute(constPool, ParameterAnnotationsAttribute.visibleTag);
@@ -607,7 +391,7 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
         return this;
 	}
 	
-	public <T> EndpointApiCtClassBuilder removeMethod(final String methodName, CtWebParam<?>... params) throws NotFoundException {
+	public <T> EndpointApiCtClassBuilder removeMethod(final String methodName, SoapParam<?>... params) throws NotFoundException {
 		
 		// 有参方法
 		if(params != null && params.length > 0) {
@@ -647,7 +431,7 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 	
 	/**
 	 * 
-	 * @description	： javassist在加载类时会用Hashtable将类信息缓存到内存中，这样随着类的加载，内存会越来越大，甚至导致内存溢出。如果应用中要加载的类比较多，建议在使用完CtClass之后删除缓存
+	 * javassist在加载类时会用Hashtable将类信息缓存到内存中，这样随着类的加载，内存会越来越大，甚至导致内存溢出。如果应用中要加载的类比较多，建议在使用完CtClass之后删除缓存
 	 * @author 		： <a href="https://github.com/vindell">vindell</a>
 	 * @return
 	 * @throws CannotCompileException

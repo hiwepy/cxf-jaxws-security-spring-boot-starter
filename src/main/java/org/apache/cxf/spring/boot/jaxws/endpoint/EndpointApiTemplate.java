@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.cxf.spring.boot.jaxws;
+package org.apache.cxf.spring.boot.jaxws.endpoint;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,9 +29,9 @@ import org.apache.cxf.feature.Feature;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.metrics.MetricsFeature;
+import org.apache.cxf.spring.boot.jaxws.MediatorInInterceptor;
 import org.apache.cxf.spring.boot.jaxws.callback.DefaultEndpointCallback;
 import org.apache.cxf.validation.BeanValidationFeature;
-import org.apache.cxf.ws.addressing.WSAddressingFeature;
 
 /**
  * TODO
@@ -83,8 +83,6 @@ public class EndpointApiTemplate {
 		endpoint.getInInterceptors().add(new MediatorInInterceptor());
 		// 接口发布在 addr 目录下
 		endpoint.publish(addr);
-		
-		new WSAddressingFeature();
 		
 		endpoints.put(addr, endpoint);
 
