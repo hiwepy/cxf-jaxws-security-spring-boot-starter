@@ -56,7 +56,7 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 		declaring.setSuperclass(superclass);
 		
 		// 默认添加无参构造器  
-		declaring.addConstructor(CtNewConstructor.defaultConstructor(superclass));
+		declaring.addConstructor(CtNewConstructor.defaultConstructor(declaring));
 		
 		this.ccFile = this.declaring.getClassFile();
 	}

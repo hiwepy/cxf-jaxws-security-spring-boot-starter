@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.cxf.spring.boot.javassist.EndpointApiInvocationHandler;
 import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointApiCtClassBuilder;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapParam;
 import org.junit.Test;
@@ -20,7 +21,7 @@ import javassist.CtClass;
 public class JaxwsApiCtClassBuilder_Test {
 
 	//@Test
-	public void testClass() throws Exception{
+	public void testClass() throws Exception {
 		
 		CtClass ctClass = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCase1")
 				.annotationForType("get", "http://ws.cxf.com", "getxx")
@@ -78,28 +79,7 @@ public class JaxwsApiCtClassBuilder_Test {
 	@Test
 	public void testInstance() throws Exception{
 		
-		InvocationHandler handler = new InvocationHandler() {
-			
-			@Override
-			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-				
-				System.err.println("=========Method Invoke ======================");
-				
-				System.out.println(method.getName());
-				for (Annotation anno : method.getAnnotations()) {
-					System.out.println(anno.toString());
-				}
-				for (Annotation[] anno : method.getParameterAnnotations()) {
-					System.out.println(anno[0].toString());
-				}
-				
-				for (Object arg : args) {
-					System.out.println(arg.toString());
-				}
-				
-				return null;
-			}
-		};
+		InvocationHandler handler = new EndpointApiInvocationHandler();
 		
 		Object ctObject = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCaseV2")
 				.annotationForType("get", "http://ws.cxf.com", "getxx")

@@ -65,6 +65,13 @@ public class EndpointApiUtils {
 		return declaring;
 	}
 	
+	public static CtConstructor defaultConstructor(final CtClass declaring) throws CannotCompileException   {
+		// 默认添加无参构造器  
+		CtConstructor cons = new CtConstructor(null, declaring);  
+		cons.setBody("{}");  
+    	return cons;
+	}
+	
 	public static CtConstructor makeConstructor(final ClassPool pool, final CtClass declaring) throws NotFoundException, CannotCompileException  {
 
 		// 添加有参构造器，注入回调接口
@@ -176,17 +183,17 @@ public class EndpointApiUtils {
 		// 添加方法注解
         AnnotationsAttribute methodAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
        
+        // 添加 @WebBound 注解
+        if (bound != null) {
+	        methodAttr.addAnnotation(EndpointApiUtils.annotWebBound(constPool, bound));
+        }
+        
         // 添加 @WebMethod 注解	        
         methodAttr.addAnnotation(EndpointApiUtils.annotWebMethod(constPool, method));
         
         // 添加 @WebResult 注解
         if (StringUtils.hasText(result.getName())) {
 	        methodAttr.addAnnotation(EndpointApiUtils.annotWebResult(constPool, result));
-        }
-        
-        // 添加 @WebBound 注解
-        if (bound != null) {
-	        methodAttr.addAnnotation(EndpointApiUtils.annotWebBound(constPool, bound));
         }
         
         ctMethod.getMethodInfo().addAttribute(methodAttr);
