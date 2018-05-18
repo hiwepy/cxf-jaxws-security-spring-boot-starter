@@ -102,7 +102,6 @@ public class EndpointApiCtClassBuilder implements Builder<CtClass> {
 		return this;
 	}
 	
-	
 	/**
 	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
 	 */

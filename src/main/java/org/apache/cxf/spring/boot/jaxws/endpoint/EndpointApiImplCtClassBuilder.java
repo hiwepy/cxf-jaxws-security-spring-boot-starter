@@ -48,7 +48,7 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	}
 	
 	public EndpointApiImplCtClassBuilder annotationForType(final SoapService service) {
-		classBuilder.annotationForType(service);
+		this.classBuilder.annotationForType(service);
 		return this;
 	}
 	
@@ -56,7 +56,7 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
 	 */
 	public EndpointApiImplCtClassBuilder annotationForType(final SoapBound bound) {
-		classBuilder.annotationForType(bound);
+		this.classBuilder.annotationForType(bound);
 		return this;
 	}
 	
@@ -72,7 +72,7 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	 */ 
 	@Override
 	public <T> EndpointApiImplCtClassBuilder newMethod(final SoapResult<T> result, final SoapMethod method, final SoapBound bound, SoapParam<?>... params) throws CannotCompileException, NotFoundException {
-	       
+		this.classBuilder.abstractMethod(result, method, bound, params);
 		CtClass returnType = result != null ? pool.get(result.getRtClass().getName()) : CtClass.voidType;
 		CtMethod ctMethod = null;
 		// 方法参数
