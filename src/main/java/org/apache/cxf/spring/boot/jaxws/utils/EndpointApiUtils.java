@@ -16,13 +16,10 @@
 package org.apache.cxf.spring.boot.jaxws.utils;
 
 import java.lang.reflect.InvocationHandler;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import javax.jws.WebParam.Mode;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.ws.Service;
@@ -55,7 +52,6 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.ParameterAnnotationsAttribute;
 import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.EnumMemberValue;
 
 public class EndpointApiUtils {
 	
@@ -116,31 +112,7 @@ public class EndpointApiUtils {
 		declaring.setSuperclass(superclass);
 
 	}
-	
-	
-	
 
-	public static Map<String, EnumMemberValue> modeMap(final ConstPool constPool, SoapParam<?>... params) {
-		// 参数模式定义
-		Map<String, EnumMemberValue> modeMap = new HashMap<String, EnumMemberValue>();
-		// 无参
-		if(params == null || params.length == 0) {
-			return modeMap;
-		}
-		// 方法参数
-		for(int i = 0;i < params.length; i++) {
-			if(!modeMap.containsKey(params[i].getMode().name())) {
-				
-				EnumMemberValue modeEnum = new EnumMemberValue(constPool);
-		        modeEnum.setType(Mode.class.getName());
-		        modeEnum.setValue(params[i].getMode().name());
-				modeMap.put(params[i].getMode().name(), modeEnum);
-				
-			}
-		}
-
-		return modeMap;
-	}
 	public static CtClass[] makeParams(final ClassPool pool, SoapParam<?>... params) throws NotFoundException {
 		// 无参
 		if(params == null || params.length == 0) {
