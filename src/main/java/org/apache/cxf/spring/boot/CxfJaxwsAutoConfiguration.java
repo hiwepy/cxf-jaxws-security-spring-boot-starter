@@ -5,14 +5,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.jws.WebService;
-import javax.xml.ws.handler.Handler;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingFeature;
-import org.apache.cxf.feature.Feature;
-import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.metrics.MetricsProvider;
 import org.apache.cxf.metrics.codahale.CodahaleMetricsProvider;
@@ -45,7 +42,6 @@ import org.springframework.util.ObjectUtils;
 @ConditionalOnClass({ SpringBus.class, CXFServlet.class })
 @ConditionalOnProperty(prefix = CxfJaxwsProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ CxfJaxwsProperties.class })
-@SuppressWarnings({ "rawtypes" })
 public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsAutoConfiguration.class);
@@ -105,15 +101,8 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 			MetricsFeature metricsFeature,
 			BeanValidationFeature validationFeature) {
 
-		Map<String, Feature> featuresOfType = getApplicationContext().getBeansOfType(Feature.class);
-		Map<String, Handler> handlersOfType = getApplicationContext().getBeansOfType(Handler.class);
-		Map<String, Interceptor> interceptorsOfType = getApplicationContext().getBeansOfType(Interceptor.class);
-
 		EndpointApiTemplate template = new EndpointApiTemplate(bus);
 
-		template.setFeatures(featuresOfType);
-		template.setHandlers(handlersOfType);
-		template.setInterceptors(interceptorsOfType);
 		template.setLoggingFeature(loggingFeature);
 		template.setMetricsFeature(metricsFeature);
 		template.setValidationFeature(validationFeature);
@@ -124,7 +113,7 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 
 			Iterator<Entry<String, Object>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
-				Entry<String, Object> entry = ite.next();
+				Entry<String, Object> entry = ite.next();	
 				// 查找该实现上的自定义注解
 				JaxwsEndpoint annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(),
 						JaxwsEndpoint.class);
