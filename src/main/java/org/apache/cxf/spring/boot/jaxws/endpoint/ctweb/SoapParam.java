@@ -28,19 +28,19 @@ public class SoapParam<T> {
 		this.name = name;
 	}
 	
-	public SoapParam(Class<T> type, String name,boolean header) {
+	public SoapParam(Class<T> type, String name, boolean header) {
 		this.type = type;
 		this.name = name;
 		this.header = header;
 	}
 	
-	public SoapParam(Class<T> type, String name,Mode mode) {
+	public SoapParam(Class<T> type, String name, Mode mode) {
 		this.type = type;
 		this.name = name;
 		this.mode = mode;
 	}
 	
-	public SoapParam(Class<T> type, String name,Mode mode, boolean header) {
+	public SoapParam(Class<T> type, String name, Mode mode, boolean header) {
 		this.type = type;
 		this.name = name;
 		this.mode = mode;

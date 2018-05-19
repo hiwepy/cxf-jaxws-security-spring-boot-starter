@@ -19,11 +19,17 @@ import java.lang.reflect.InvocationHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebParam.Mode;
 import javax.jws.WebResult;
 import javax.jws.WebService;
+import javax.xml.ws.Service;
+import javax.xml.ws.ServiceMode;
+import javax.xml.ws.WebServiceProvider;
+import javax.xml.ws.soap.Addressing;
+import javax.xml.ws.soap.AddressingFeature.Responses;
 
 import org.apache.cxf.spring.boot.jaxws.annotation.WebBound;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapBound;
@@ -31,7 +37,12 @@ import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapMethod;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapParam;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapResult;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+
+import com.github.vindell.javassist.bytecode.CtAnnotationBuilder;
+import com.github.vindell.javassist.utils.JavassistUtils;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -44,11 +55,11 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.ParameterAnnotationsAttribute;
 import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.BooleanMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
-import javassist.bytecode.annotation.StringMemberValue;
 
 public class EndpointApiUtils {
+	
+	protected static final Logger LOG = LoggerFactory.getLogger(EndpointApiUtils.class);
 
 	public static CtClass makeClass(final ClassPool pool, final String classname)
 			throws NotFoundException, CannotCompileException {
@@ -57,7 +68,7 @@ public class EndpointApiUtils {
 		if (null == declaring) {
 			declaring = pool.makeClass(classname);
 		}
-
+		
 		// 当 ClassPool.doPruning=true的时候，Javassist 在CtClass
 		// object被冻结时，会释放存储在ClassPool对应的数据。这样做可以减少javassist的内存消耗。默认情况ClassPool.doPruning=false。
 		declaring.stopPruning(true);
@@ -144,29 +155,92 @@ public class EndpointApiUtils {
 		return parameters;
 	}
 	
+
+	/**
+	 * 构造 @WebServiceProvider 注解
+	 * @param constPool	
+	 * @param wsdlLocation		：Location of the WSDL description for the service.
+	 * @param serviceName		：Service name.
+	 * @param targetNamespace	：Target namespace for the service
+	 * @param portName			：Port name.
+	 * @return
+	 */
+	public static Annotation annotWebServiceProvider(final ConstPool constPool, String wsdlLocation,
+			String serviceName, String targetNamespace, String portName) {
+
+		wsdlLocation = StringUtils.hasText(wsdlLocation) ? wsdlLocation : "";
+		serviceName = StringUtils.hasText(serviceName) ? serviceName : "";
+		targetNamespace = StringUtils.hasText(targetNamespace) ? targetNamespace : "";
+		portName = StringUtils.hasText(portName) ? portName : "";
+
+		return CtAnnotationBuilder.create(WebServiceProvider.class, constPool)
+				.addStringMember("wsdlLocation", wsdlLocation).addStringMember("serviceName", serviceName)
+				.addStringMember("targetNamespace", targetNamespace).addStringMember("portName", portName).build();
+
+	}
+	
 	/**
 	 * 构造 @WebService 注解
 	 */
 	public static Annotation annotWebService(final ConstPool constPool, final SoapService service) {
 
-		Annotation annot = new Annotation(WebService.class.getName(), constPool);
-		annot.addMemberValue("name", new StringMemberValue(service.getName(), constPool));
-		annot.addMemberValue("targetNamespace", new StringMemberValue(service.getTargetNamespace(), constPool));
+		CtAnnotationBuilder builder = CtAnnotationBuilder.create(WebService.class, constPool)
+				.addStringMember("name", service.getName())
+				.addStringMember("targetNamespace", service.getTargetNamespace());
+
 		if (StringUtils.hasText(service.getServiceName())) {
-			annot.addMemberValue("serviceName", new StringMemberValue(service.getServiceName(), constPool));
+			builder.addStringMember("serviceName", service.getServiceName());
 		}
 		if (StringUtils.hasText(service.getPortName())) {
-			annot.addMemberValue("portName", new StringMemberValue(service.getPortName(), constPool));
+			builder.addStringMember("portName", service.getPortName());
 		}
 		if (StringUtils.hasText(service.getWsdlLocation())) {
-			annot.addMemberValue("wsdlLocation", new StringMemberValue(service.getWsdlLocation(), constPool));
+			builder.addStringMember("wsdlLocation", service.getWsdlLocation());
 		}
 		if (StringUtils.hasText(service.getEndpointInterface())) {
-			annot.addMemberValue("endpointInterface", new StringMemberValue(service.getEndpointInterface(), constPool));
+			builder.addStringMember("endpointInterface", service.getEndpointInterface());
 		}
+		
+		return builder.build();
 
-		return annot;
 	}
+	
+	/**
+	 * 构造 @Addressing 注解
+	 */
+	public static Annotation annotAddressing(final ConstPool constPool, final boolean enabled, final boolean required,
+			final Responses responses) {
+		
+		return CtAnnotationBuilder.create(Addressing.class, constPool)
+				.addBooleanMember("enabled", enabled)
+				.addBooleanMember("required", required)
+				.addEnumMember("responses", responses).build();
+
+	}
+
+	/**
+	 * 构造 @ServiceMode 注解
+	 */
+	public static Annotation annotServiceMode(final ConstPool constPool, final Service.Mode mode) {
+		return CtAnnotationBuilder.create(ServiceMode.class, constPool).addEnumMember("value", mode).build();
+	}
+	
+	/**
+	 * 构造 @HandlerChain 注解
+	 */
+	public static Annotation annotHandlerChain(final ConstPool constPool, String name, String file) {
+
+		CtAnnotationBuilder builder = CtAnnotationBuilder.create(HandlerChain.class, constPool);
+		if (StringUtils.hasText(name)) {
+			builder.addStringMember("name", name );
+		}
+		if (StringUtils.hasText(file)) {
+			builder.addStringMember("file", file);
+		}		
+		return builder.build();
+		
+	}
+	
 	
 	/**
 	 * 为方法添加 @WebMethod、 @WebResult、@WebBound、@WebParam 注解
@@ -181,8 +255,8 @@ public class EndpointApiUtils {
 	public static <T> void methodAnnotations(final CtMethod ctMethod, final ConstPool constPool, final SoapResult<T> result, final SoapMethod method, final SoapBound bound, SoapParam<?>... params) {
 		
 		// 添加方法注解
-        AnnotationsAttribute methodAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-       
+        AnnotationsAttribute methodAttr = JavassistUtils.getAnnotationsAttribute(ctMethod);
+        
         // 添加 @WebBound 注解
         if (bound != null) {
 	        methodAttr.addAnnotation(EndpointApiUtils.annotWebBound(constPool, bound));
@@ -201,8 +275,8 @@ public class EndpointApiUtils {
         // 添加 @WebParam 参数注解
         if(params != null && params.length > 0) {
         	
-        	ParameterAnnotationsAttribute parameterAtrribute = new ParameterAnnotationsAttribute(constPool, ParameterAnnotationsAttribute.visibleTag);
-            Annotation[][] paramArrays = EndpointApiUtils.annotWebParams(constPool, params);
+        	ParameterAnnotationsAttribute parameterAtrribute = JavassistUtils.getParameterAnnotationsAttribute(ctMethod);
+            Annotation[][] paramArrays = EndpointApiUtils.annotParams(constPool, params);
             parameterAtrribute.setAnnotations(paramArrays);
             ctMethod.getMethodInfo().addAttribute(parameterAtrribute);
             
@@ -247,14 +321,14 @@ public class EndpointApiUtils {
 	 * 构造 @WebBound 注解
 	 */
 	public static Annotation annotWebBound(final ConstPool constPool, final SoapBound bound) {
-		
-		Annotation annot = new Annotation(WebBound.class.getName(), constPool);
-		annot.addMemberValue("uid", new StringMemberValue(bound.getUid(), constPool));
-        if (StringUtils.hasText(bound.getJson())) {
-        	annot.addMemberValue("json", new StringMemberValue(bound.getJson(), constPool));
+
+		CtAnnotationBuilder builder = CtAnnotationBuilder.create(WebBound.class, constPool).
+			addStringMember("uid", bound.getUid());
+		if (StringUtils.hasText(bound.getJson())) {
+			builder.addStringMember("json", bound.getJson());
         }
-        
-		return annot;
+		return builder.build();
+		
 	}
 	
 	/**
@@ -262,33 +336,44 @@ public class EndpointApiUtils {
 	 */
 	public static Annotation annotWebMethod(final ConstPool constPool, final SoapMethod method) {
 		
-		Annotation annot = new Annotation(WebMethod.class.getName(), constPool);
-		annot.addMemberValue("operationName", new StringMemberValue(method.getOperationName(), constPool));
-        if (StringUtils.hasText(method.getAction())) {
-        	annot.addMemberValue("action", new StringMemberValue(method.getAction(), constPool));
-        }
-        annot.addMemberValue("exclude", new BooleanMemberValue(method.isExclude(), constPool));
-        
-		return annot;
+		CtAnnotationBuilder builder = CtAnnotationBuilder.create(WebMethod.class, constPool)
+				.addStringMember("operationName", method.getOperationName());
+		if (StringUtils.hasText(method.getAction())) {
+			builder.addStringMember("action", method.getAction());
+		}
+		builder.addBooleanMember("exclude", method.isExclude());
+		return builder.build();
+		
 	}
 	
 	/**
 	 * 构造 @WebParam 参数注解
 	 */
-	public static <T> Annotation[][] annotWebParams(final ConstPool constPool, SoapParam<?>... params) {
+	public static <T> Annotation[][] annotParams(final ConstPool constPool, SoapParam<?>... params) {
 
 		// 添加 @WebParam 参数注解
 		if (params != null && params.length > 0) {
 
 			// 参数模式定义
-			Map<String, EnumMemberValue> modeMap = modeMap(constPool, params);
+			// Map<String, EnumMemberValue> modeMap = modeMap(constPool, params);
 			
 			Annotation[][] paramArrays = new Annotation[params.length][1];
 			
-			Annotation paramAnnot = null;
 			for (int i = 0; i < params.length; i++) {
-
-				paramAnnot = new Annotation(WebParam.class.getName(), constPool);
+				
+				CtAnnotationBuilder builder = CtAnnotationBuilder.create(WebParam.class, constPool)
+						.addStringMember("name", params[i].getName())
+						.addStringMember("targetNamespace", params[i].getTargetNamespace())
+						.addEnumMember("mode", params[i].getMode())
+						.addBooleanMember("header", params[i].isHeader());
+				if (StringUtils.hasText(params[i].getPartName())) {
+					builder.addStringMember("partName", params[i].getPartName());
+				}
+				paramArrays[i][0] = builder.build();
+				
+				/*
+				
+				Annotation paramAnnot = new Annotation(WebParam.class.getName(), constPool);
 				paramAnnot.addMemberValue("name", new StringMemberValue(params[i].getName(), constPool));
 				if (StringUtils.hasText(params[i].getPartName())) {
 					paramAnnot.addMemberValue("partName", new StringMemberValue(params[i].getPartName(), constPool));
@@ -299,8 +384,7 @@ public class EndpointApiUtils {
 				if (params[i].isHeader()) {
 					paramAnnot.addMemberValue("header", new BooleanMemberValue(true, constPool));
 				}
-
-				paramArrays[i][0] = paramAnnot;
+				paramArrays[i][0] = paramAnnot;*/
 
 			}
 
@@ -315,17 +399,17 @@ public class EndpointApiUtils {
 	 */
 	public static <T> Annotation annotWebResult(final ConstPool constPool, final SoapResult<T> result) {
 		
-		Annotation annot = new Annotation(WebResult.class.getName(), constPool);
-        annot.addMemberValue("name", new StringMemberValue(result.getName(), constPool));
-        if (StringUtils.hasText(result.getPartName())) {
-        	annot.addMemberValue("partName", new StringMemberValue(result.getPartName(), constPool));
+		CtAnnotationBuilder builder = CtAnnotationBuilder.create(WebResult.class, constPool)
+				.addStringMember("name", result.getName())
+				.addBooleanMember("header", result.isHeader());
+		if (StringUtils.hasText(result.getPartName())) {
+			builder.addStringMember("partName", result.getPartName());
+		}
+		 if (StringUtils.hasText(result.getTargetNamespace())) {
+			 builder.addStringMember("targetNamespace", result.getTargetNamespace());
         }
-        if (StringUtils.hasText(result.getTargetNamespace())) {
-        	annot.addMemberValue("targetNamespace", new StringMemberValue(result.getTargetNamespace(), constPool));
-        }
-        annot.addMemberValue("header", new BooleanMemberValue(result.isHeader(), constPool));
-        
-		return annot;
+		return builder.build();
+		
 	}
 	
 	

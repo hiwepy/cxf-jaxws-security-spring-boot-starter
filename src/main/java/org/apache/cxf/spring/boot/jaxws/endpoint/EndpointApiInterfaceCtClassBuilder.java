@@ -1,7 +1,9 @@
 package org.apache.cxf.spring.boot.jaxws.endpoint;
 
+import javax.xml.ws.Service;
+import javax.xml.ws.soap.AddressingFeature.Responses;
+
 import org.apache.commons.lang3.builder.Builder;
-import org.apache.cxf.spring.boot.jaxws.annotation.WebBound;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapBound;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapMethod;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapParam;
@@ -9,6 +11,7 @@ import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapResult;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapService;
 import org.apache.cxf.spring.boot.jaxws.utils.EndpointApiUtils;
 
+import com.github.vindell.javassist.utils.ClassPoolFactory;
 import com.github.vindell.javassist.utils.JavassistUtils;
 
 import javassist.CannotCompileException;
@@ -23,7 +26,6 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.StringMemberValue;
 
 /**
  * 
@@ -39,12 +41,12 @@ public class EndpointApiInterfaceCtClassBuilder implements Builder<CtClass> {
 	// 构建动态类
 	private ClassPool pool = null;
 	private CtClass declaring  = null;
-	private ClassFile ccFile = null;
+	private ClassFile classFile = null;
 	
 	//private Loader loader = new Loader(pool);
 	
 	public EndpointApiInterfaceCtClassBuilder(final String classname) throws CannotCompileException, NotFoundException  {
-		this(JavassistUtils.getDefaultPool(), classname);
+		this(ClassPoolFactory.getDefaultPool(), classname);
 	}
 	
 	public EndpointApiInterfaceCtClassBuilder(final ClassPool pool, final String classname) throws CannotCompileException, NotFoundException {
@@ -56,25 +58,25 @@ public class EndpointApiInterfaceCtClassBuilder implements Builder<CtClass> {
 		CtClass superclass = pool.get(Cloneable.class.getName());
 		declaring.setSuperclass(superclass);
 		
-		this.ccFile = this.declaring.getClassFile();
+		this.classFile = this.declaring.getClassFile();
 	}
 	
 	/**
-	 * @description ： 给动态类添加 @WebService 注解
+	 * 给动态类添加 @WebService 注解
 	 * @param name： 此属性的值包含XML Web Service的名称。在默认情况下，该值是实现XML Web Service的类的名称，wsdl:portType 的名称。缺省值为 Java 类或接口的非限定名称。（字符串）
 	 * @param targetNamespace：指定你想要的名称空间，默认是使用接口实现类的包名的反缀（字符串）
 	 * @return
 	 */
-	public EndpointApiInterfaceCtClassBuilder annotationForType(final String name, final String targetNamespace) {
-		return this.annotationForType(targetNamespace, targetNamespace, null, null, null, null);
+	public EndpointApiInterfaceCtClassBuilder annotWebService(final String name, final String targetNamespace) {
+		return this.annotWebService(targetNamespace, targetNamespace, null, null, null, null);
 	}
 	
-	public EndpointApiInterfaceCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName) {
-		return this.annotationForType(targetNamespace, targetNamespace, serviceName, null, null, null);
+	public EndpointApiInterfaceCtClassBuilder annotWebService(final String name, final String targetNamespace, String serviceName) {
+		return this.annotWebService(targetNamespace, targetNamespace, serviceName, null, null, null);
 	}
 	
 	/**
-	 * @description ： 给动态类添加 @WebService 注解
+	 * 给动态类添加 @WebService 注解
 	 * @param name： 此属性的值包含XML Web Service的名称。在默认情况下，该值是实现XML Web Service的类的名称，wsdl:portType 的名称。缺省值为 Java 类或接口的非限定名称。（字符串）
 	 * @param targetNamespace：指定你想要的名称空间，默认是使用接口实现类的包名的反缀（字符串）
 	 * @param serviceName： 对外发布的服务名，指定 Web Service 的服务名称：wsdl:service。缺省值为 Java 类的简单名称 + Service。（字符串）
@@ -83,41 +85,71 @@ public class EndpointApiInterfaceCtClassBuilder implements Builder<CtClass> {
 	 * @param endpointInterface： 服务接口全路径, 指定做SEI（Service EndPoint Interface）服务端点接口（字符串）
 	 * @return
 	 */
-	public EndpointApiInterfaceCtClassBuilder annotationForType(final String name, final String targetNamespace, String serviceName,
+	public EndpointApiInterfaceCtClassBuilder annotWebService(final String name, final String targetNamespace, String serviceName,
 			String portName, String wsdlLocation, String endpointInterface) {
 
-		return annotationForType(new SoapService(name, targetNamespace, serviceName, portName, wsdlLocation, endpointInterface));
+		return annotWebService(new SoapService(name, targetNamespace, serviceName, portName, wsdlLocation, endpointInterface));
 	}
 	
-	public EndpointApiInterfaceCtClassBuilder annotationForType(final SoapService service) {
+	/**
+	 * 添加类注解 @WebService
+	 */
+	public EndpointApiInterfaceCtClassBuilder annotWebService(final SoapService service) {
 
-		ConstPool constPool = this.ccFile.getConstPool();
-		// 添加类注解 @WebService 
-		AnnotationsAttribute classAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+		ConstPool constPool = this.classFile.getConstPool();
 		Annotation annot = EndpointApiUtils.annotWebService(constPool, service);
-		classAttr.addAnnotation(annot);
-		ccFile.addAttribute(classAttr);
+		JavassistUtils.addClassAnnotation(declaring, annot);
 		
 		return this;
 	}
 	
 	/**
-	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
-	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @param uid
-	 * @param json
-	 * @return
+	 * 添加类注解 @ServiceMode
 	 */
-	public EndpointApiInterfaceCtClassBuilder bindDataForType(final String uid, final String json) {
+	public EndpointApiInterfaceCtClassBuilder annotServiceMode(final Service.Mode mode) {
+		
+		ConstPool constPool = this.classFile.getConstPool();
+		Annotation annot = EndpointApiUtils.annotServiceMode(constPool, mode);
+		JavassistUtils.addClassAnnotation(declaring, annot);
+        
+		return this;
+	}
+	
+	/**
+	 * 添加类注解 @WebServiceProvider
+	 */
+	public EndpointApiInterfaceCtClassBuilder annotWebServiceProvider(String wsdlLocation, String serviceName,
+			String targetNamespace, String portName) {
 
-		ConstPool constPool = this.ccFile.getConstPool();
-		// 添加类注解 @WebBound
-		AnnotationsAttribute classAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-		Annotation bound = new Annotation(WebBound.class.getName(), constPool);
-		bound.addMemberValue("uid", new StringMemberValue(uid, constPool));
-		bound.addMemberValue("json", new StringMemberValue(json, constPool));
-		classAttr.addAnnotation(bound);
-		ccFile.addAttribute(classAttr);
+		ConstPool constPool = this.classFile.getConstPool();
+		Annotation annot = EndpointApiUtils.annotWebServiceProvider(constPool, wsdlLocation, serviceName,
+				targetNamespace, portName);
+		JavassistUtils.addClassAnnotation(declaring, annot);
+
+		return this;
+	}
+	
+	/**
+	 * 添加类注解 @Addressing
+	 */
+	public EndpointApiInterfaceCtClassBuilder annotAddressing(final boolean enabled, final boolean required,
+			final Responses responses) {
+		
+		ConstPool constPool = this.classFile.getConstPool();
+		Annotation annot = EndpointApiUtils.annotAddressing(constPool, enabled, required, responses);
+		JavassistUtils.addClassAnnotation(declaring, annot);
+        
+		return this;
+	}
+	
+	/**
+	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
+	 */
+	public EndpointApiInterfaceCtClassBuilder annotWebBound(final SoapBound bound) {
+
+		ConstPool constPool = this.classFile.getConstPool();
+		Annotation annot = EndpointApiUtils.annotWebBound(constPool, bound);
+		JavassistUtils.addClassAnnotation(declaring, annot);
 		
 		return this;
 	}
@@ -127,11 +159,11 @@ public class EndpointApiInterfaceCtClassBuilder implements Builder<CtClass> {
 	 */
 	public EndpointApiInterfaceCtClassBuilder annotationForType(final SoapBound bound) {
 
-		ConstPool constPool = this.ccFile.getConstPool();
+		ConstPool constPool = this.classFile.getConstPool();
 		// 添加类注解 @WebBound
 		AnnotationsAttribute classAttr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
 		classAttr.addAnnotation(EndpointApiUtils.annotWebBound(constPool, bound));
-		ccFile.addAttribute(classAttr);
+		classFile.addAttribute(classAttr);
 		
 		return this;
 	}
@@ -226,7 +258,7 @@ public class EndpointApiInterfaceCtClassBuilder implements Builder<CtClass> {
 	 */ 
 	public <T> EndpointApiInterfaceCtClassBuilder abstractMethod(final SoapResult<T> result, final SoapMethod method, final SoapBound bound, SoapParam<?>... params) throws CannotCompileException, NotFoundException {
 	       
-		ConstPool constPool = this.ccFile.getConstPool();
+		ConstPool constPool = this.classFile.getConstPool();
 		
 		// 创建抽象方法
 		CtClass returnType = result != null ? pool.get(result.getRtClass().getName()) : CtClass.voidType;

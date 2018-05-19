@@ -3,6 +3,9 @@ package org.apache.cxf.spring.boot.jaxws.endpoint;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.xml.ws.Service;
+import javax.xml.ws.soap.AddressingFeature.Responses;
+
 import org.apache.commons.lang3.builder.Builder;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapBound;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapMethod;
@@ -11,7 +14,7 @@ import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapResult;
 import org.apache.cxf.spring.boot.jaxws.endpoint.ctweb.SoapService;
 import org.apache.cxf.spring.boot.jaxws.utils.EndpointApiUtils;
 
-import com.github.vindell.javassist.utils.JavassistUtils;
+import com.github.vindell.javassist.utils.ClassPoolFactory;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -36,7 +39,7 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	private EndpointApiInterfaceCtClassBuilder classBuilder;
 	
 	public EndpointApiImplCtClassBuilder(final String classname) throws CannotCompileException, NotFoundException  {
-		this(JavassistUtils.getDefaultPool(), classname);
+		this(ClassPoolFactory.getDefaultPool(), classname);
 	}
   
 	public EndpointApiImplCtClassBuilder(final ClassPool pool, final String classname) throws CannotCompileException, NotFoundException {
@@ -47,16 +50,51 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 		
 	}
 	
-	public EndpointApiImplCtClassBuilder annotationForType(final SoapService service) {
-		this.classBuilder.annotationForType(service);
+	/**
+	 * 添加类注解 @WebService
+	 */
+	public EndpointApiImplCtClassBuilder annotWebService(final SoapService service) {
+		this.classBuilder.annotWebService(service);
+		return this;
+	}
+	
+	/**
+	 * 添加类注解 @ServiceMode
+	 */
+	public EndpointApiCtClassBuilder annotServiceMode(final Service.Mode mode) {
+		
+		this.classBuilder.annotServiceMode(mode);
+        
+		return this;
+	}
+	
+	/**
+	 * 添加类注解 @WebServiceProvider
+	 */
+	public EndpointApiCtClassBuilder annotWebServiceProvider(String wsdlLocation, String serviceName,
+			String targetNamespace, String portName) {
+
+		this.classBuilder.annotWebServiceProvider(wsdlLocation, serviceName, targetNamespace, portName);
+
+		return this;
+	}
+	
+	/**
+	 * 添加类注解 @Addressing
+	 */
+	public EndpointApiCtClassBuilder annotAddressing(final boolean enabled, final boolean required,
+			final Responses responses) {
+		
+		this.classBuilder.annotAddressing(enabled, required, responses);
+        
 		return this;
 	}
 	
 	/**
 	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
 	 */
-	public EndpointApiImplCtClassBuilder annotationForType(final SoapBound bound) {
-		this.classBuilder.annotationForType(bound);
+	public EndpointApiImplCtClassBuilder annotWebBound(final SoapBound bound) {
+		this.classBuilder.annotWebBound(bound);
 		return this;
 	}
 	

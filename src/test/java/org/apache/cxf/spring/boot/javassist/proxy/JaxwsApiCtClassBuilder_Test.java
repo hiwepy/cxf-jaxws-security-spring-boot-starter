@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+import javax.jws.WebParam;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.spring.boot.javassist.EndpointApiInvocationHandler;
 import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointApiCtClassBuilder;
@@ -24,7 +26,7 @@ public class JaxwsApiCtClassBuilder_Test {
 	public void testClass() throws Exception {
 		
 		CtClass ctClass = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCase1")
-				.annotationForType("get", "http://ws.cxf.com", "getxx")
+				.annotWebService("get", "http://ws.cxf.com", "getxx")
 				.makeField("public int k = 3;")
 				.newField(String.class, "uid", UUID.randomUUID().toString())
 				.makeMethod("public void sayHello(String txt) { System.out.println(txt); }")
@@ -82,11 +84,11 @@ public class JaxwsApiCtClassBuilder_Test {
 		InvocationHandler handler = new EndpointApiInvocationHandler();
 		
 		Object ctObject = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCaseV2")
-				.annotationForType("get", "http://ws.cxf.com", "getxx")
+				.annotWebService("get", "http://ws.cxf.com", "getxx")
 				.makeField("public int k = 3;")
 				.newField(String.class, "uid", UUID.randomUUID().toString())
 				.newMethod(String.class, "sayHello", new SoapParam(String.class, "text"))
-				.newMethod(String.class, "sayHello2", new SoapParam(String.class, "text"))
+				.newMethod(String.class, "sayHello2", new SoapParam(String.class, "text", WebParam.Mode.OUT))
 				.toInstance(handler);
 		
 		Class clazz = ctObject.getClass();
