@@ -53,17 +53,17 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	/**
 	 * 添加类注解 @WebService
 	 */
-	public EndpointApiImplCtClassBuilder annotWebService(final SoapService service) {
-		this.classBuilder.annotWebService(service);
+	public EndpointApiImplCtClassBuilder webService(final SoapService service) {
+		this.classBuilder.webService(service);
 		return this;
 	}
 	
 	/**
 	 * 添加类注解 @ServiceMode
 	 */
-	public EndpointApiCtClassBuilder annotServiceMode(final Service.Mode mode) {
+	public EndpointApiCtClassBuilder serviceMode(final Service.Mode mode) {
 		
-		this.classBuilder.annotServiceMode(mode);
+		this.classBuilder.serviceMode(mode);
         
 		return this;
 	}
@@ -71,10 +71,10 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	/**
 	 * 添加类注解 @WebServiceProvider
 	 */
-	public EndpointApiCtClassBuilder annotWebServiceProvider(String wsdlLocation, String serviceName,
+	public EndpointApiCtClassBuilder webServiceProvider(String wsdlLocation, String serviceName,
 			String targetNamespace, String portName) {
 
-		this.classBuilder.annotWebServiceProvider(wsdlLocation, serviceName, targetNamespace, portName);
+		this.classBuilder.webServiceProvider(wsdlLocation, serviceName, targetNamespace, portName);
 
 		return this;
 	}
@@ -85,7 +85,7 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	public EndpointApiCtClassBuilder annotAddressing(final boolean enabled, final boolean required,
 			final Responses responses) {
 		
-		this.classBuilder.annotAddressing(enabled, required, responses);
+		this.classBuilder.addressing(enabled, required, responses);
         
 		return this;
 	}
@@ -93,8 +93,8 @@ public class EndpointApiImplCtClassBuilder extends EndpointApiCtClassBuilder imp
 	/**
 	 * 通过给动态类增加 <code>@WebBound</code>注解实现，数据的绑定
 	 */
-	public EndpointApiImplCtClassBuilder annotWebBound(final SoapBound bound) {
-		this.classBuilder.annotWebBound(bound);
+	public EndpointApiImplCtClassBuilder bind(final SoapBound bound) {
+		this.classBuilder.bind(bound);
 		return this;
 	}
 	

@@ -26,7 +26,7 @@ public class JaxwsApiCtClassBuilder_Test {
 	public void testClass() throws Exception {
 		
 		CtClass ctClass = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCase1")
-				.annotWebService("get", "http://ws.cxf.com", "getxx")
+				.webService("get", "http://ws.cxf.com", "getxx")
 				.makeField("public int k = 3;")
 				.newField(String.class, "uid", UUID.randomUUID().toString())
 				.makeMethod("public void sayHello(String txt) { System.out.println(txt); }")
@@ -84,7 +84,7 @@ public class JaxwsApiCtClassBuilder_Test {
 		InvocationHandler handler = new EndpointApiInvocationHandler();
 		
 		Object ctObject = new EndpointApiCtClassBuilder("org.apache.cxf.spring.boot.FirstCaseV2")
-				.annotWebService("get", "http://ws.cxf.com", "getxx")
+				.webService("get", "http://ws.cxf.com", "getxx")
 				.makeField("public int k = 3;")
 				.newField(String.class, "uid", UUID.randomUUID().toString())
 				.newMethod(String.class, "sayHello", new SoapParam(String.class, "text"))
