@@ -255,8 +255,8 @@ public class EndpointApiUtils {
 	public static <T> void methodAnnotations(final CtMethod ctMethod, final ConstPool constPool, final SoapResult<T> result, final SoapMethod method, final SoapBound bound, SoapParam<?>... params) {
 		
 		// 添加方法注解
-        AnnotationsAttribute methodAttr = JavassistUtils.getAnnotationsAttribute(ctMethod);
-        
+		AnnotationsAttribute methodAttr = JavassistUtils.getAnnotationsAttribute(ctMethod);
+		
         // 添加 @WebBound 注解
         if (bound != null) {
 	        methodAttr.addAnnotation(EndpointApiUtils.annotWebBound(constPool, bound));
