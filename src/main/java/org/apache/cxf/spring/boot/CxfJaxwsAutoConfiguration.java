@@ -9,11 +9,11 @@ import javax.jws.WebService;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.bus.spring.SpringBus;
+import org.apache.cxf.endpoint.annotation.WebEndpoint;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.metrics.MetricsProvider;
 import org.apache.cxf.metrics.codahale.CodahaleMetricsProvider;
-import org.apache.cxf.spring.boot.jaxws.annotation.JaxwsEndpoint;
 import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointApiTemplate;
 import org.apache.cxf.spring.boot.jaxws.property.LoggingFeatureProperty;
 import org.apache.cxf.transport.servlet.CXFServlet;
@@ -115,11 +115,11 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 			while (ite.hasNext()) {
 				Entry<String, Object> entry = ite.next();	
 				// 查找该实现上的自定义注解
-				JaxwsEndpoint annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(),
-						JaxwsEndpoint.class);
+				WebEndpoint annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(),
+						WebEndpoint.class);
 				if (annotationType == null) {
 					// 注解为空，则跳过该实现，并打印错误信息
-					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", JaxwsEndpoint.class,
+					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", WebEndpoint.class,
 							entry.getValue().getClass(), entry.getKey());
 					continue;
 				}
