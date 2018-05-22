@@ -18,16 +18,19 @@ package org.apache.cxf.spring.boot.jaxws.endpoint;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Predicate;
 
 import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.ServerImpl;
 import org.apache.cxf.ext.logging.LoggingFeature;
+import org.apache.cxf.feature.Feature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.spring.boot.jaxws.MediatorInInterceptor;
 import org.apache.cxf.spring.boot.jaxws.callback.DefaultEndpointCallback;
+import org.apache.cxf.spring.boot.jaxws.feature.EndpointPauseFeature;
 import org.apache.cxf.validation.BeanValidationFeature;
 
 /**
@@ -62,9 +65,9 @@ public class EndpointApiTemplate {
 	/**
 	 * 为指定的addr发布Endpoint
 	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @param addr
-	 * @param implementor
-	 * @param callback
+	 * @param addr  	   	：服务地址
+	 * @param implementor  	：服务实现
+	 * @param callback  	：回调函数
 	 * @return
 	 */
 	public Endpoint publish(String addr, Object implementor, EndpointCallback callback) {
@@ -81,12 +84,38 @@ public class EndpointApiTemplate {
 
 		return endpoint;
 	}
+	
+	/**
+	 * 暂停服务
+	 * @author 		： <a href="https://github.com/vindell">vindell</a>
+	 * @param addr  ：服务地址
+	 * @param cause ：暂停原因
+	 * @return
+	 */
+	public Endpoint pause(String addr, String cause) {
+		
+		EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
+		if(null != endpoint) {
+			
+			endpoint.getFeatures().removeIf(new Predicate<Feature>() {
+
+				@Override
+				public boolean test(Feature t) {
+					return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
+				}
+			});
+			endpoint.getFeatures().add(0, new EndpointPauseFeature(cause));
+		}
+		
+		return endpoint;
+	}
+	
 
 	/**
 	 * 销毁指定路径匹配的Endpoint
 	 * 
 	 * @author ： <a href="https://github.com/vindell">vindell</a>
-	 * @param addr
+	 * @param addr  ：服务地址
 	 */
 	public void destroy(String addr) {
 		EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
