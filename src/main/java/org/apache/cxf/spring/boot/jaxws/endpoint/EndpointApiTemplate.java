@@ -110,6 +110,30 @@ public class EndpointApiTemplate {
 		return endpoint;
 	}
 	
+	/**
+	 * 恢复服务
+	 * @author 		： <a href="https://github.com/vindell">vindell</a>
+	 * @param addr  ：服务地址
+	 * @return
+	 */
+	public Endpoint restore(String addr) {
+		
+		EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
+		if(null != endpoint) {
+			
+			endpoint.getFeatures().removeIf(new Predicate<Feature>() {
+
+				@Override
+				public boolean test(Feature t) {
+					return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
+				}
+			});
+		}
+		
+		return endpoint;
+	}
+	
+	
 
 	/**
 	 * 销毁指定路径匹配的Endpoint
