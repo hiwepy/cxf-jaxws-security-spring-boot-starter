@@ -14,6 +14,11 @@ public class CxfJaxwsProperties {
 	 */
 	private boolean enabled = false;
 
+	/**
+	 * Service Namespace : Specifies the published soap interface service namespace
+	 */
+	private String namespace;
+	
 	@NestedConfigurationProperty
 	private LoggingFeatureProperty loggingFeature = new LoggingFeatureProperty();
 
@@ -23,6 +28,14 @@ public class CxfJaxwsProperties {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
 	}
 
 	public LoggingFeatureProperty getLoggingFeature() {
