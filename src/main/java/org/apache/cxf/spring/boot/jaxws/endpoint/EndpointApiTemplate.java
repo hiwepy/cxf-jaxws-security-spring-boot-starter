@@ -29,7 +29,6 @@ import org.apache.cxf.feature.Feature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.spring.boot.jaxws.MediatorInInterceptor;
-import org.apache.cxf.spring.boot.jaxws.callback.DefaultEndpointCallback;
 import org.apache.cxf.spring.boot.jaxws.feature.EndpointPauseFeature;
 import org.apache.cxf.validation.BeanValidationFeature;
 
@@ -46,9 +45,9 @@ public class EndpointApiTemplate {
 	private MetricsFeature metricsFeature;
 	private BeanValidationFeature validationFeature;
 
-	public EndpointApiTemplate(Bus bus) {
+	public EndpointApiTemplate(Bus bus, EndpointCallback callback) {
 		this.bus = bus;
-		this.callback = new DefaultEndpointCallback(loggingFeature, metricsFeature, validationFeature);
+		this.callback = callback;
 	}
 
 	/**

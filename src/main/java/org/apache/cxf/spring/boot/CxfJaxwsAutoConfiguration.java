@@ -14,7 +14,9 @@ import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.metrics.MetricsProvider;
 import org.apache.cxf.metrics.codahale.CodahaleMetricsProvider;
+import org.apache.cxf.spring.boot.jaxws.callback.DefaultEndpointCallback;
 import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointApiTemplate;
+import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointCallback;
 import org.apache.cxf.spring.boot.jaxws.property.LoggingFeatureProperty;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.apache.cxf.validation.BeanValidationFeature;
@@ -96,12 +98,22 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	}
 	
 	@Bean
+	@ConditionalOnMissingBean(EndpointCallback.class)
+	public EndpointCallback endpointCallback(
+			LoggingFeature loggingFeature,
+			MetricsFeature metricsFeature,
+			BeanValidationFeature validationFeature) {
+		return new DefaultEndpointCallback(loggingFeature, metricsFeature, validationFeature);
+	}
+	
+	@Bean
 	public EndpointApiTemplate endpointTemplate(Bus bus,
+			EndpointCallback endpointCallback,
 			LoggingFeature loggingFeature,
 			MetricsFeature metricsFeature,
 			BeanValidationFeature validationFeature) {
 
-		EndpointApiTemplate template = new EndpointApiTemplate(bus);
+		EndpointApiTemplate template = new EndpointApiTemplate(bus, endpointCallback);
 
 		template.setLoggingFeature(loggingFeature);
 		template.setMetricsFeature(metricsFeature);
