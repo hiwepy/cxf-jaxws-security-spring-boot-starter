@@ -28,7 +28,6 @@ import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.metrics.MetricsFeature;
-import org.apache.cxf.spring.boot.jaxws.MediatorInInterceptor;
 import org.apache.cxf.spring.boot.jaxws.feature.EndpointPauseFeature;
 import org.apache.cxf.validation.BeanValidationFeature;
 
@@ -75,7 +74,6 @@ public class EndpointApiTemplate {
 		
 		callback.doCallback(implementor, endpoint);
 
-		endpoint.getInInterceptors().add(new MediatorInInterceptor());
 		// 接口发布在 addr 目录下
 		endpoint.publish(addr);
 		

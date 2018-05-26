@@ -49,9 +49,9 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsAutoConfiguration.class);
 	private ApplicationContext applicationContext;
 
-	@Bean
+	@Bean(name = Bus.DEFAULT_BUS_ID)
 	@ConditionalOnMissingBean(Bus.class)
-	public Bus bus() {
+	public SpringBus bus() {
 		SpringBus bus = new SpringBus();
 		BusFactory.setDefaultBus(bus);
 		return bus;
