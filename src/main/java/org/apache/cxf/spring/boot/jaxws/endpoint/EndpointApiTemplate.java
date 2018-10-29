@@ -15,6 +15,8 @@
  */
 package org.apache.cxf.spring.boot.jaxws.endpoint;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -30,6 +32,9 @@ import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.spring.boot.jaxws.feature.EndpointPauseFeature;
 import org.apache.cxf.validation.BeanValidationFeature;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
+import org.springframework.web.util.UrlPathHelper;
 
 /**
  * TODO
@@ -43,7 +48,11 @@ public class EndpointApiTemplate {
 	private LoggingFeature loggingFeature;
 	private MetricsFeature metricsFeature;
 	private BeanValidationFeature validationFeature;
-
+	/** 路径解析工具 */
+	private UrlPathHelper urlPathHelper = new UrlPathHelper();
+	/** 路径规则匹配工具 */
+	private PathMatcher pathMatcher = new AntPathMatcher();
+	
 	public EndpointApiTemplate(Bus bus, EndpointCallback callback) {
 		this.bus = bus;
 		this.callback = callback;
@@ -66,7 +75,7 @@ public class EndpointApiTemplate {
 	 * @param addr  	   	：服务地址
 	 * @param implementor  	：服务实现
 	 * @param callback  	：回调函数
-	 * @return
+	 * @return The Endpoint
 	 */
 	public Endpoint publish(String addr, Object implementor, EndpointCallback callback) {
 
@@ -84,65 +93,75 @@ public class EndpointApiTemplate {
 	
 	/**
 	 * 暂停服务
-	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @param addr  ：服务地址
-	 * @param cause ：暂停原因
-	 * @return
+	 * @author 		      ： <a href="https://github.com/vindell">vindell</a>
+	 * @param pattern ：服务地址或表达式
+	 * @param cause   ：暂停原因
+	 * @return The Endpoint paused
 	 */
-	public Endpoint pause(String addr, String cause) {
-		
-		EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
-		if(null != endpoint) {
-			
-			endpoint.getFeatures().removeIf(new Predicate<Feature>() {
+	public List<Endpoint> pause(String pattern, String cause) {
+		List<Endpoint> pauses = new ArrayList<>();
+		for (String addr : endpoints.keySet()) {
+			if (pathMatcher.match(pattern, addr)) {
+				EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
+				if(null != endpoint) {
+					
+					endpoint.getFeatures().removeIf(new Predicate<Feature>() {
 
-				@Override
-				public boolean test(Feature t) {
-					return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
+						@Override
+						public boolean test(Feature t) {
+							return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
+						}
+					});
+					endpoint.getFeatures().add(0, new EndpointPauseFeature(cause));
+					pauses.add(endpoint);
 				}
-			});
-			endpoint.getFeatures().add(0, new EndpointPauseFeature(cause));
+			}
 		}
-		
-		return endpoint;
+		return pauses;
 	}
 	
 	/**
 	 * 恢复服务
 	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @param addr  ：服务地址
-	 * @return
+	 * @param pattern ：服务地址或表达式
+	 * @return The Endpoint restored
 	 */
-	public Endpoint restore(String addr) {
-		
-		EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
-		if(null != endpoint) {
-			
-			endpoint.getFeatures().removeIf(new Predicate<Feature>() {
+	public List<Endpoint> restore(String pattern) {
+		List<Endpoint> pauses = new ArrayList<>();
+		for (String addr : endpoints.keySet()) {
+			if (pathMatcher.match(pattern, addr)) {
+				EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
+				if(null != endpoint) {
+					
+					endpoint.getFeatures().removeIf(new Predicate<Feature>() {
 
-				@Override
-				public boolean test(Feature t) {
-					return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
+						@Override
+						public boolean test(Feature t) {
+							return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
+						}
+					});
+					
+					pauses.add(endpoint);
 				}
-			});
+			}
 		}
-		
-		return endpoint;
+		return pauses;
 	}
-	
-	
 
 	/**
 	 * 销毁指定路径匹配的Endpoint
-	 * 
 	 * @author ： <a href="https://github.com/vindell">vindell</a>
-	 * @param addr  ：服务地址
+	 * @param pattern ：服务地址或表达式
 	 */
-	public void destroy(String addr) {
-		EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
-		if (endpoint != null) {
-			ServerImpl server = endpoint.getServer(addr);
-			server.destroy();
+	public void destroy(String pattern) {
+		for (String addr : endpoints.keySet()) {
+			if (pathMatcher.match(pattern, addr)) {
+				EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
+				if (endpoint != null) {
+					ServerImpl server = endpoint.getServer(addr);
+					server.destroy();
+				}
+			}
 		}
 	}
 
@@ -184,6 +203,30 @@ public class EndpointApiTemplate {
 
 	public void setValidationFeature(BeanValidationFeature validationFeature) {
 		this.validationFeature = validationFeature;
+	}
+
+	public EndpointCallback getCallback() {
+		return callback;
+	}
+
+	public void setCallback(EndpointCallback callback) {
+		this.callback = callback;
+	}
+
+	public UrlPathHelper getUrlPathHelper() {
+		return urlPathHelper;
+	}
+
+	public void setUrlPathHelper(UrlPathHelper urlPathHelper) {
+		this.urlPathHelper = urlPathHelper;
+	}
+
+	public PathMatcher getPathMatcher() {
+		return pathMatcher;
+	}
+
+	public void setPathMatcher(PathMatcher pathMatcher) {
+		this.pathMatcher = pathMatcher;
 	}
 	
 }
