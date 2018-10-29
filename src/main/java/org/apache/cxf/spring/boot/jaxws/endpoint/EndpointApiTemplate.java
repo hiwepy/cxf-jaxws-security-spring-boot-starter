@@ -16,6 +16,7 @@
 package org.apache.cxf.spring.boot.jaxws.endpoint;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -154,15 +155,18 @@ public class EndpointApiTemplate {
 	 * @param pattern ：服务地址或表达式
 	 */
 	public void destroy(String pattern) {
-		for (String addr : endpoints.keySet()) {
-			if (pathMatcher.match(pattern, addr)) {
-				EndpointImpl endpoint = (EndpointImpl) endpoints.get(addr);
+		Iterator<Map.Entry<String, Endpoint>> ite = endpoints.entrySet().iterator();
+        while(ite.hasNext()){
+            Map.Entry<String, Endpoint> entry = ite.next();
+            if (pathMatcher.match(pattern, entry.getKey())) {
+            	EndpointImpl endpoint = (EndpointImpl) endpoints.get(entry.getKey());
 				if (endpoint != null) {
-					ServerImpl server = endpoint.getServer(addr);
+					ServerImpl server = endpoint.getServer(entry.getKey());
 					server.destroy();
+					ite.remove();  
 				}
-			}
-		}
+            }
+        }
 	}
 
 	public Bus getBus() {
