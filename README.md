@@ -13,7 +13,7 @@
 <dependency>
 	<groupId>${project.groupId}</groupId>
 	<artifactId>spring-boot-starter-cxf-jaxws-plus</artifactId>
-	<version>${project.version}</version>
+	<version>1.0.0.RELEASE</version>
 </dependency>
 ```
 
