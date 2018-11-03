@@ -62,9 +62,9 @@ public class EndpointApiTemplate {
 	/**
 	 * 为指定的addr发布Endpoint
 	 * @author ： <a href="https://github.com/vindell">vindell</a>
-	 * @param addr
-	 * @param api
-	 * @return
+	 * @param addr  	   	：服务地址
+	 * @param implementor  	：服务实现
+	 * @return The Endpoint
 	 */
 	public Endpoint publish(String addr, Object implementor) {
 		return this.publish(addr, implementor, callback);

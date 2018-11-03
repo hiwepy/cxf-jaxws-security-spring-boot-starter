@@ -20,7 +20,6 @@ import javax.xml.ws.Endpoint;
 import org.apache.cxf.jaxws.EndpointImpl;
 
 /**
- * TODO
  * @author 		： <a href="https://github.com/vindell">vindell</a>
  */
 public interface EndpointCallback {
@@ -28,8 +27,9 @@ public interface EndpointCallback {
 	/**
 	 * Endpoint 初始化 后的回调
 	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @param endpoint
-	 * @return
+	 * @param implementor  	：服务实现
+	 * @param endpoint 	   	：{@link Endpoint} instance
+	 * @return The Endpoint
 	 */
 	Endpoint doCallback(Object implementor, EndpointImpl endpoint);
 	
