@@ -364,8 +364,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<commons-io.version>2.5</commons-io.version>
-		<cxf.version>3.2.4</cxf.version>
+		<commons-io.version>2.6</commons-io.version>
+		<cxf.version>3.2.7</cxf.version>
+		<cxf-rt-javassist.version>1.0.1-SNAPSHOT</cxf-rt-javassist.version>
 		<fastjson.version>1.2.51</fastjson.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -374,8 +375,6 @@
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.21.0</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<metrics.version>4.0.2</metrics.version>
-		<javassist.version>3.22.0-GA</javassist.version>
 	</properties>
 
 	<dependencies>
@@ -443,7 +442,7 @@
 		<dependency>
 			<groupId>com.github.vindell</groupId>
 			<artifactId>cxf-rt-javassist</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${cxf-rt-javassist.version}</version>
 		</dependency>
 
 		<!-- CXF-Jaxws Spring Boot Starter -->
@@ -502,16 +501,7 @@
 		    <artifactId>cxf-rt-features-clustering</artifactId>
 		    <version>${cxf.version}</version>
 		</dependency>
-		<dependency>
-		    <groupId>org.apache.cxf</groupId>
-		    <artifactId>cxf-rt-features-metrics</artifactId>
-		    <version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.dropwizard.metrics</groupId>
-		    <artifactId>metrics-core</artifactId>
-		    <version>${metrics.version}</version><!--$NO-MVN-MAN-VER$-->
-		</dependency>
+		
 		<dependency>
 		    <groupId>org.apache.cxf</groupId>
 		    <artifactId>cxf-rt-features-logging</artifactId>
@@ -531,11 +521,11 @@
 		</dependency>
 		<!-- 
 		https://mvnrepository.com/artifact/com.alibaba/dubbo-common
-<dependency>
-    <groupId>com.alibaba</groupId>
-    <artifactId>dubbo-common</artifactId>
-    <version>2.6.1</version>
-</dependency> -->
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>dubbo-common</artifactId>
+		    <version>2.6.1</version>
+		</dependency> -->
 		
 				
 	</dependencies>

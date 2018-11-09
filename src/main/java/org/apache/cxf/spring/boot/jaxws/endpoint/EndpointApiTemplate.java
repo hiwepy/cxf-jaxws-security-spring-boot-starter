@@ -30,7 +30,6 @@ import org.apache.cxf.endpoint.ServerImpl;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.jaxws.EndpointImpl;
-import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.spring.boot.jaxws.feature.EndpointPauseFeature;
 import org.apache.cxf.validation.BeanValidationFeature;
 import org.springframework.util.AntPathMatcher;
@@ -47,7 +46,6 @@ public class EndpointApiTemplate {
 	private Bus bus;
 	private EndpointCallback callback;
 	private LoggingFeature loggingFeature;
-	private MetricsFeature metricsFeature;
 	private BeanValidationFeature validationFeature;
 	/** 路径解析工具 */
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();
@@ -191,14 +189,6 @@ public class EndpointApiTemplate {
 
 	public void setLoggingFeature(LoggingFeature loggingFeature) {
 		this.loggingFeature = loggingFeature;
-	}
-
-	public MetricsFeature getMetricsFeature() {
-		return metricsFeature;
-	}
-
-	public void setMetricsFeature(MetricsFeature metricsFeature) {
-		this.metricsFeature = metricsFeature;
 	}
 
 	public BeanValidationFeature getValidationFeature() {

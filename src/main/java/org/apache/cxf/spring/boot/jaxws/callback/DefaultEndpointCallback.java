@@ -23,7 +23,6 @@ import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.ext.logging.LoggingInInterceptor;
 import org.apache.cxf.ext.logging.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
-import org.apache.cxf.metrics.MetricsFeature;
 import org.apache.cxf.spring.boot.jaxws.endpoint.EndpointCallback;
 import org.apache.cxf.validation.BeanValidationFeature;
 
@@ -36,13 +35,10 @@ import org.apache.cxf.validation.BeanValidationFeature;
 public class DefaultEndpointCallback implements EndpointCallback {
 
 	private LoggingFeature loggingFeature;
-	private MetricsFeature metricsFeature;
 	private BeanValidationFeature validationFeature;
 
-	public DefaultEndpointCallback( LoggingFeature loggingFeature,
-			MetricsFeature metricsFeature, BeanValidationFeature validationFeature) {
+	public DefaultEndpointCallback( LoggingFeature loggingFeature, BeanValidationFeature validationFeature) {
 		this.loggingFeature = loggingFeature;
-		this.metricsFeature = metricsFeature;
 		this.validationFeature = validationFeature;
 	}
 
@@ -52,7 +48,7 @@ public class DefaultEndpointCallback implements EndpointCallback {
 		endpoint.getInInterceptors().add(new LoggingInInterceptor());
 		endpoint.getOutInterceptors().add(new LoggingOutInterceptor());
 		
-		endpoint.getFeatures().addAll(Arrays.asList(metricsFeature, loggingFeature, validationFeature));
+		endpoint.getFeatures().addAll(Arrays.asList(loggingFeature, validationFeature));
 
 		return endpoint;
 	}
