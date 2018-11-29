@@ -31,7 +31,6 @@ import org.apache.cxf.validation.BeanValidationFeature;
  * 
  * @author ： <a href="https://github.com/vindell">vindell</a>
  */
-@SuppressWarnings("rawtypes")
 public class DefaultEndpointCallback implements EndpointCallback {
 
 	private LoggingFeature loggingFeature;

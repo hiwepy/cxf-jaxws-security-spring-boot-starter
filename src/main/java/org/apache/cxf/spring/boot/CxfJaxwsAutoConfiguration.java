@@ -109,9 +109,6 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 			BeanValidationFeature validationFeature) {
 
 		EndpointApiTemplate template = new EndpointApiTemplate(bus, endpointCallback);
-
-		template.setLoggingFeature(loggingFeature);
-		template.setValidationFeature(validationFeature);
 		
 		// 动态创建、发布 Ws
 		Map<String, Object> beansOfType = getApplicationContext().getBeansWithAnnotation(WebService.class);
