@@ -27,11 +27,9 @@ import javax.xml.ws.Endpoint;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.ServerImpl;
-import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.spring.boot.jaxws.feature.EndpointPauseFeature;
-import org.apache.cxf.validation.BeanValidationFeature;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.util.UrlPathHelper;
@@ -45,8 +43,6 @@ public class EndpointApiTemplate {
 	private ConcurrentMap<String, Endpoint> endpoints = new ConcurrentHashMap<String, Endpoint>();
 	private Bus bus;
 	private EndpointCallback callback;
-	private LoggingFeature loggingFeature;
-	private BeanValidationFeature validationFeature;
 	/** 路径解析工具 */
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();
 	/** 路径规则匹配工具 */
@@ -79,7 +75,7 @@ public class EndpointApiTemplate {
 	public Endpoint publish(String addr, Object implementor, EndpointCallback callback) {
 
 		EndpointImpl endpoint = new EndpointImpl(bus, implementor);
-		
+
 		callback.doCallback(implementor, endpoint);
 
 		// 接口发布在 addr 目录下
@@ -181,22 +177,6 @@ public class EndpointApiTemplate {
 	
 	public void setEndpoints(Map<String, Endpoint> endpoints) {
 		this.endpoints.putAll(endpoints);
-	}
-
-	public LoggingFeature getLoggingFeature() {
-		return loggingFeature;
-	}
-
-	public void setLoggingFeature(LoggingFeature loggingFeature) {
-		this.loggingFeature = loggingFeature;
-	}
-
-	public BeanValidationFeature getValidationFeature() {
-		return validationFeature;
-	}
-
-	public void setValidationFeature(BeanValidationFeature validationFeature) {
-		this.validationFeature = validationFeature;
 	}
 
 	public EndpointCallback getCallback() {
