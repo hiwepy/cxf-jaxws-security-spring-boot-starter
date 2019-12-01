@@ -1,4 +1,4 @@
-# spring-boot-starter-cxf-jaxws-plus
+# cxf-jaxws-security-spring-boot-starter
 
 
 ### 说明
@@ -12,8 +12,8 @@
 ``` xml
 <dependency>
 	<groupId>${project.groupId}</groupId>
-	<artifactId>spring-boot-starter-cxf-jaxws-plus</artifactId>
-	<version>1.0.1.RELEASE</version>
+	<artifactId>cxf-jaxws-security-spring-boot-starter</artifactId>
+	<version>${project.version}</version>
 </dependency>
 ```
 

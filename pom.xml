@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>com.github.vindell</groupId>
-	<artifactId>spring-boot-starter-cxf-jaxws-plus</artifactId>
+	<artifactId>cxf-jaxws-security-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For CXF Jaxws Server</description>
 	<version>1.0.3-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
