@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, vindell (https://github.com/vindell).
+ * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,13 +20,13 @@ import javax.xml.ws.Endpoint;
 import org.apache.cxf.jaxws.EndpointImpl;
 
 /**
- * @author 		： <a href="https://github.com/vindell">vindell</a>
+ * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
  */
 public interface EndpointCallback {
 
 	/**
 	 * Endpoint 初始化 后的回调
-	 * @author 		： <a href="https://github.com/vindell">vindell</a>
+	 * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
 	 * @param implementor  	：服务实现
 	 * @param endpoint 	   	：{@link Endpoint} instance
 	 * @return The Endpoint
