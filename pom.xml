@@ -9,7 +9,7 @@
 		<relativePath /> 
 	</parent>
 
-	<groupId>com.github.hiwepy</groupId>
+	<groupId>io.github.hiwepy</groupId>
 	<artifactId>cxf-jaxws-security-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For CXF Jaxws Server</description>
 	<version>4.0.x.20251227-SNAPSHOT</version>
@@ -423,7 +423,7 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.github.hiwepy</groupId>
+			<groupId>io.github.hiwepy</groupId>
 			<artifactId>cxf-rt-javassist</artifactId>
 			<version>${cxf-rt-javassist.version}</version>
 		</dependency>
