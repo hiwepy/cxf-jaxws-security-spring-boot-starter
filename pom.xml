@@ -424,6 +424,7 @@
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.21.0</maven-surefire-plugin.vertsion>
         <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
+                <dubbo-common.version>2.6.1</dubbo-common.version>
     </properties>
 
     <dependencies>
@@ -588,10 +589,21 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo-common</artifactId>
-            <version>2.6.1</version>
+            <version>${dubbo-common.version}</version>
         </dependency> -->
         
                 
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo-common</artifactId>
+                <version>${dubbo-common.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 </project>
