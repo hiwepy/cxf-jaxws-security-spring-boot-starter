@@ -425,6 +425,8 @@
         <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
         <metrics.version>4.0.2</metrics.version>
         <javassist.version>3.22.0-GA</javassist.version>
+                <cxf-rt-javassist.version>4.0.x.20241003.RELEASE</cxf-rt-javassist.version>
+                <dubbo-common.version>2.6.1</dubbo-common.version>
     </properties>
 
     <dependencies>
@@ -501,7 +503,7 @@
         <dependency>
             <groupId>com.github.vindell</groupId>
             <artifactId>cxf-rt-javassist</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${cxf-rt-javassist.version}</version>
         </dependency>
 
         <!-- CXF-Jaxws Spring Boot Starter -->
@@ -601,10 +603,26 @@
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>dubbo-common</artifactId>
-    <version>2.6.1</version>
+    <version>${dubbo-common.version}</version>
 </dependency> -->
         
                 
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.github.vindell</groupId>
+                <artifactId>cxf-rt-javassist</artifactId>
+                <version>${cxf-rt-javassist.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo-common</artifactId>
+                <version>${dubbo-common.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 </project>
