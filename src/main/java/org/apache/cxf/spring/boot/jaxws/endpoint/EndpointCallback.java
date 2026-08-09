@@ -25,10 +25,10 @@ import org.apache.cxf.jaxws.EndpointImpl;
 public interface EndpointCallback {
 
 	/**
-	 * Endpoint 初始化 后的回调
+	 * Endpoint
 	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @param implementor  	：服务实现
-	 * @param endpoint 	   	：{@link Endpoint} instance
+	 * @param implementor ：serviceimplementation
+	 * @param endpoint ：{@link Endpoint} instance
 	 * @return The Endpoint
 	 */
 	Endpoint doCallback(Object implementor, EndpointImpl endpoint);

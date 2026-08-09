@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import org.springframework.context.annotation.Import;
 
 /**
- * 初始化 Cxf Jaxws Manager
+ * Cxf Jaxws Manager
  * @author [@Loong Wan](https://github.com/loong10k)
  */
 @Target({ ElementType.TYPE })

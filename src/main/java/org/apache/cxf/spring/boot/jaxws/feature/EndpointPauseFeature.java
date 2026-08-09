@@ -18,6 +18,11 @@ package org.apache.cxf.spring.boot.jaxws.feature;
 import org.apache.cxf.Bus;
 import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.interceptor.InterceptorProvider;
+/** The Endpoint Pause Feature.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 public class EndpointPauseFeature extends AbstractFeature {
 	
@@ -28,6 +33,10 @@ public class EndpointPauseFeature extends AbstractFeature {
 	}
 	
 	@Override
+	/** Creates a initialize provider bean.
+	 * @param provider the provider
+	 * @param bus the bus
+	 */
 	protected void initializeProvider(InterceptorProvider provider, Bus bus) {
 		EndpointPauseInterceptor myInt = new EndpointPauseInterceptor(cause);
 		provider.getInInterceptors().add(myInt);

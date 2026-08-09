@@ -11,6 +11,11 @@ import org.w3c.dom.Element;
   
 import javax.xml.namespace.QName;  
 import java.util.List;  
+/** Interceptor for Client Login.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
   
 public class ClientLoginInterceptor  extends AbstractPhaseInterceptor<SoapMessage> {  
   

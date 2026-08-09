@@ -21,6 +21,16 @@ import org.springframework.context.annotation.Configuration;
 
 //http://cxf.apache.org/docs/saml-web-sso.html
 
+/**
+ * Auto-configuration for the CXF JAX-WS WS-Security / SAML SSO integration.
+ *
+ * <p>Activated when {@code cxf.jaxws.saml.enabled=true}. It exposes the WSS4J in/out
+ * interceptors, the username/password authentication interceptor and a
+ * {@link WSPolicyFeature} that can be attached to published endpoints.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @AutoConfigureAfter(name = { "org.apache.cxf.spring.boot.autoconfigure.CxfAutoConfiguration" })
 @Configuration
 @ConditionalOnWebApplication
@@ -32,6 +42,11 @@ public class CxfJaxwsSecurityConfiguration implements ApplicationContextAware {
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsSecurityConfiguration.class);
 	private ApplicationContext applicationContext;
 
+	/**
+	 * Build a {@link WSS4JInInterceptor} for incoming WS-Security processing (e.g.
+	 * UsernameToken validation).
+	 * @return a new WSS4J in-interceptor
+	 */
 	public WSS4JInInterceptor WSS4JInInterceptor() {
 
 		WSS4JInInterceptor s = new WSS4JInInterceptor();
@@ -46,6 +61,11 @@ public class CxfJaxwsSecurityConfiguration implements ApplicationContextAware {
 		return s;
 	}
 
+	/**
+	 * Build a {@link WSS4JOutInterceptor} for outgoing WS-Security processing (e.g.
+	 * UsernameToken insertion).
+	 * @return a new WSS4J out-interceptor
+	 */
 	public WSS4JOutInterceptor WSS4JOutInterceptor() {
 
 		WSS4JOutInterceptor s = new WSS4JOutInterceptor();
@@ -60,12 +80,22 @@ public class CxfJaxwsSecurityConfiguration implements ApplicationContextAware {
 		return s;
 	}
 
+	/**
+	 * Build a {@link UsernamePwdAuthInterceptor} used to authenticate incoming SOAP
+	 * requests against the configured username/password credentials.
+	 * @return a new username/password authentication interceptor
+	 */
 	public UsernamePwdAuthInterceptor UsernamePwdAuthInterceptor() {
 		UsernamePwdAuthInterceptor s = new UsernamePwdAuthInterceptor();
 
 		return s;
 	}
 
+	/**
+	 * Create the {@link WSPolicyFeature} used to attach WS-Policy assertions to the
+	 * published endpoints.
+	 * @return a new WS-Policy feature
+	 */
 	@Bean
 	public WSPolicyFeature policyFeature() {
 
@@ -74,11 +104,20 @@ public class CxfJaxwsSecurityConfiguration implements ApplicationContextAware {
 		return feature;
 	}
 
+	/**
+	 * Set the owning {@link ApplicationContext}.
+	 * @param applicationContext the application context
+	 * @throws BeansException never thrown
+	 */
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+	/**
+	 * Get the owning {@link ApplicationContext}.
+	 * @return the application context
+	 */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

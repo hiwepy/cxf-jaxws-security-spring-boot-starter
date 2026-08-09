@@ -1,4 +1,9 @@
 package org.apache.cxf.spring.boot.jaxws.exception;
+/** Exception thrown when a A P I Build error occurs.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 @SuppressWarnings("serial")
 public class APIBuildException extends RuntimeException {

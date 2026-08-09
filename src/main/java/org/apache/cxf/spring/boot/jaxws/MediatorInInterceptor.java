@@ -38,6 +38,11 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.DepthXMLStreamReader;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.transport.MessageObserver;
+/** Interceptor for Mediator In.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 
 public class MediatorInInterceptor extends AbstractPhaseInterceptor<SoapMessage> {
 

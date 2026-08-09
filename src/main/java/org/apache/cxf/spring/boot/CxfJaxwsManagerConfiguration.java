@@ -16,6 +16,17 @@ import org.springframework.context.annotation.Configuration;
 
 //http://cxf.apache.org/docs/springboot.html
 
+/**
+ * Auto-configuration for the CXF JMX management integration.
+ *
+ * <p>Activated when the {@link InstrumentationManager} class is on the classpath and
+ * {@code cxf.manager.enabled=true}. It registers an {@link InstrumentationManagerImpl}
+ * bound to the CXF bus and a {@link CounterRepository} that gathers performance
+ * counters exposed via JMX.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration
 @ConditionalOnWebApplication
 @ConditionalOnClass({ InstrumentationManager.class })
@@ -25,6 +36,13 @@ public class CxfJaxwsManagerConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsManagerConfiguration.class);
 
+	/**
+	 * Create the {@link InstrumentationManagerImpl} configured from the bound
+	 * properties, exposing CXF MBeans through JMX.
+	 * @param bus the CXF bus
+	 * @param properties the JMX management properties
+	 * @return a configured instrumentation manager
+	 */
 	@Bean
 	@ConditionalOnMissingBean(InstrumentationManagerImpl.class)
 	public InstrumentationManager instrumentationManager(Bus bus, CxfJaxwsManagerProperties properties) {
@@ -39,8 +57,14 @@ public class CxfJaxwsManagerConfiguration {
 		mgr.setUsePlatformMBeanServer(properties.isUsePlatformMBeanServer());
 	    return mgr;
 	}
-	
-	// Wiring the counter repository 
+
+	/**
+	 * Create the {@link CounterRepository} wired to the CXF bus, used to track
+	 * performance counters for the published endpoints.
+	 * @param bus the CXF bus
+	 * @return a configured counter repository
+	 */
+	// Wiring the counter repository
 	@Bean
 	@ConditionalOnMissingBean(InstrumentationManagerImpl.class)
 	public CounterRepository counterRepository(Bus bus){
@@ -48,5 +72,5 @@ public class CxfJaxwsManagerConfiguration {
 		repository.setBus(bus);
 		return repository;
 	}
-	
+
 }

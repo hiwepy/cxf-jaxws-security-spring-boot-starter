@@ -12,6 +12,11 @@ import org.w3c.dom.NodeList;
 import javax.xml.soap.SOAPException;  
 import javax.xml.soap.SOAPHeader;  
 import javax.xml.soap.SOAPMessage;  
+/** Interceptor for Username Pwd Auth.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
   
 public class UsernamePwdAuthInterceptor extends AbstractPhaseInterceptor<SoapMessage>{  
     

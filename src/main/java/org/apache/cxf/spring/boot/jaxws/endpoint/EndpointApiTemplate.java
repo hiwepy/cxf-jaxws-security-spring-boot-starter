@@ -54,10 +54,10 @@ public class EndpointApiTemplate {
 	}
 
 	/**
-	 * 为指定的addr发布Endpoint
+	 * addrEndpoint
 	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @param addr  	   	：服务地址
-	 * @param implementor  	：服务实现
+	 * @param addr ：service
+	 * @param implementor ：serviceimplementation
 	 * @return The Endpoint
 	 */
 	public Endpoint publish(String addr, Object implementor) {
@@ -65,11 +65,11 @@ public class EndpointApiTemplate {
 	}
 
 	/**
-	 * 为指定的addr发布Endpoint
+	 * addrEndpoint
 	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @param addr  	   	：服务地址
-	 * @param implementor  	：服务实现
-	 * @param callback  	：回调函数
+	 * @param addr ：service
+	 * @param implementor ：serviceimplementation
+	 * @param callback ：
 	 * @return The Endpoint
 	 */
 	public Endpoint publish(String addr, Object implementor, EndpointCallback callback) {
@@ -87,10 +87,10 @@ public class EndpointApiTemplate {
 	}
 	
 	/**
-	 * 暂停服务
+	 * service
 	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @param pattern ：服务地址或表达式
-	 * @param cause   ：暂停原因
+	 * @param pattern ：serviceor
+	 * @param cause ：
 	 * @return The Endpoint paused
 	 */
 	public List<Endpoint> pause(String pattern, String cause) {
@@ -116,9 +116,9 @@ public class EndpointApiTemplate {
 	}
 	
 	/**
-	 * 恢复服务
+	 * service
 	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @param pattern ：服务地址或表达式
+	 * @param pattern ：serviceor
 	 * @return The Endpoint restored
 	 */
 	public List<Endpoint> restore(String pattern) {
@@ -144,9 +144,9 @@ public class EndpointApiTemplate {
 	}
 
 	/**
-	 * 销毁指定路径匹配的Endpoint
+	 * Endpoint
 	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @param pattern ：服务地址或表达式
+	 * @param pattern ：serviceor
 	 */
 	public void destroy(String pattern) {
 		Iterator<Map.Entry<String, Endpoint>> ite = endpoints.entrySet().iterator();
@@ -163,42 +163,72 @@ public class EndpointApiTemplate {
         }
 	}
 
+	/** Returns the bus.
+	 * @return the result
+	 */
 	public Bus getBus() {
 		return bus;
 	}
 
+	/** Sets the bus.
+	 * @param bus the bus
+	 */
 	public void setBus(Bus bus) {
 		this.bus = bus;
 	}
 
+	/** Returns the endpoints.
+	 * @return the result
+	 */
 	public ConcurrentMap<String, Endpoint> getEndpoints() {
 		return endpoints;
 	}
 	
+	/** Sets the endpoints.
+	 * @param endpoints the endpoints
+	 */
 	public void setEndpoints(Map<String, Endpoint> endpoints) {
 		this.endpoints.putAll(endpoints);
 	}
 
+	/** Returns the callback.
+	 * @return the result
+	 */
 	public EndpointCallback getCallback() {
 		return callback;
 	}
 
+	/** Sets the callback.
+	 * @param callback the callback
+	 */
 	public void setCallback(EndpointCallback callback) {
 		this.callback = callback;
 	}
 
+	/** Returns the url path helper.
+	 * @return the result
+	 */
 	public UrlPathHelper getUrlPathHelper() {
 		return urlPathHelper;
 	}
 
+	/** Sets the url path helper.
+	 * @param urlPathHelper the urlPathHelper
+	 */
 	public void setUrlPathHelper(UrlPathHelper urlPathHelper) {
 		this.urlPathHelper = urlPathHelper;
 	}
 
+	/** Returns the path matcher.
+	 * @return the result
+	 */
 	public PathMatcher getPathMatcher() {
 		return pathMatcher;
 	}
 
+	/** Sets the path matcher.
+	 * @param pathMatcher the pathMatcher
+	 */
 	public void setPathMatcher(PathMatcher pathMatcher) {
 		this.pathMatcher = pathMatcher;
 	}

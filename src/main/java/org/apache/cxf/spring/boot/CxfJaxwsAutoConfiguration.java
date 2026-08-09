@@ -35,6 +35,19 @@ import org.springframework.util.ObjectUtils;
 
 //http://cxf.apache.org/docs/springboot.html
 
+/**
+ * Auto-configuration for the Apache CXF JAX-WS endpoints in a Spring Boot web
+ * application.
+ *
+ * <p>Activated when {@code cxf.jaxws.enabled=true}. It registers the CXF {@link Bus},
+ * the bean-validation provider/feature, the logging feature, a default
+ * {@link EndpointCallback} and an {@link EndpointApiTemplate} that scans for beans
+ * annotated with {@link WebService} and publishes those carrying a
+ * {@link WebEndpoint} annotation.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @AutoConfigureAfter(name = { "org.apache.cxf.spring.boot.autoconfigure.CxfAutoConfiguration" })
 @Configuration
 @ConditionalOnWebApplication
@@ -46,6 +59,10 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsAutoConfiguration.class);
 	private ApplicationContext applicationContext;
 
+	/**
+	 * Create the CXF {@link SpringBus} and set it as the default bus.
+	 * @return the default Spring bus
+	 */
 	@Bean(name = Bus.DEFAULT_BUS_ID)
 	@ConditionalOnMissingBean(Bus.class)
 	public SpringBus bus() {
@@ -54,19 +71,34 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 		return bus;
 	}
 
+	/**
+	 * Create the default {@link BeanValidationProvider} used by the bean-validation
+	 * feature.
+	 * @return a new bean validation provider
+	 */
 	@Bean
 	@ConditionalOnMissingBean(BeanValidationProvider.class)
 	public BeanValidationProvider validationProvider() {
 		return new BeanValidationProvider();
 	}
 
+	/**
+	 * Create the {@link BeanValidationFeature} wired with the supplied provider.
+	 * @param validationProvider the validation provider used by the feature
+	 * @return a new bean validation feature
+	 */
 	@Bean
 	public BeanValidationFeature validationFeature(BeanValidationProvider validationProvider) {
 		BeanValidationFeature feature = new BeanValidationFeature();
 		feature.setProvider(validationProvider);
 		return feature;
 	}
-	
+
+	/**
+	 * Create the {@link LoggingFeature} configured from the bound properties.
+	 * @param properties the JAX-WS properties carrying the logging configuration
+	 * @return a configured logging feature
+	 */
 	@Bean
 	public LoggingFeature loggingFeature(CxfJaxwsProperties properties) {
 		
@@ -85,6 +117,10 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	
 	/*@Bean
 	@ConditionalOnMissingBean(MetricsProvider.class)
+	/** Creates a metrics provider bean.
+	 * @param bus the bus
+	 * @return the result
+	 */
 	public MetricsProvider metricsProvider(Bus bus) {
 		return new CodahaleMetricsProvider(bus);
 	}
@@ -94,6 +130,13 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 		return new MetricsFeature(metricsProvider);
 	}*/
 	
+	/**
+	 * Create the default {@link EndpointCallback} that attaches the logging and
+	 * bean-validation features to each published endpoint.
+	 * @param loggingFeature the logging feature to apply
+	 * @param validationFeature the bean validation feature to apply
+	 * @return a new default endpoint callback
+	 */
 	@Bean
 	@ConditionalOnMissingBean(EndpointCallback.class)
 	public EndpointCallback endpointCallback(
@@ -101,7 +144,17 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 			BeanValidationFeature validationFeature) {
 		return new DefaultEndpointCallback(loggingFeature, validationFeature);
 	}
-	
+
+	/**
+	 * Create the {@link EndpointApiTemplate} and dynamically publish every bean
+	 * annotated with {@link WebService} that also carries a {@link WebEndpoint}
+	 * annotation.
+	 * @param bus the CXF bus
+	 * @param endpointCallback the callback used to configure each published endpoint
+	 * @param loggingFeature the logging feature
+	 * @param validationFeature the bean validation feature
+	 * @return the endpoint template used to manage published endpoints
+	 */
 	@Bean
 	public EndpointApiTemplate endpointTemplate(Bus bus,
 			EndpointCallback endpointCallback,
@@ -133,11 +186,20 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 		return template;
 	}
 
+	/**
+	 * Set the owning {@link ApplicationContext}.
+	 * @param applicationContext the application context
+	 * @throws BeansException never thrown
+	 */
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+	/**
+	 * Get the owning {@link ApplicationContext}.
+	 * @return the application context
+	 */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
