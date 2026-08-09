@@ -48,13 +48,7 @@ public class CxfJaxwsManagerConfiguration {
 	public InstrumentationManager instrumentationManager(Bus bus, CxfJaxwsManagerProperties properties) {
 		InstrumentationManagerImpl mgr = new InstrumentationManagerImpl();
 		mgr.setBus(bus);
-		mgr.setCreateMBServerConnectorFactory(properties.isCreateMBServerConnectorFactory());
-		mgr.setDaemon(properties.isDaemon());
 		mgr.setEnabled(properties.isEnabled());
-		mgr.setJMXServiceURL(properties.getJmxServiceURL());
-		mgr.setServerName(properties.getServerName());
-		mgr.setThreaded(properties.isThreaded());
-		mgr.setUsePlatformMBeanServer(properties.isUsePlatformMBeanServer());
 	    return mgr;
 	}
 
@@ -64,9 +58,8 @@ public class CxfJaxwsManagerConfiguration {
 	 * @param bus the CXF bus
 	 * @return a configured counter repository
 	 */
-	// Wiring the counter repository
 	@Bean
-	@ConditionalOnMissingBean(InstrumentationManagerImpl.class)
+	@ConditionalOnMissingBean(CounterRepository.class)
 	public CounterRepository counterRepository(Bus bus){
 		CounterRepository repository = new CounterRepository();
 		repository.setBus(bus);

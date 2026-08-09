@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.jws.WebService;
+import jakarta.jws.WebService;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
@@ -115,20 +115,17 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 		return feature;
 	}
 	
-	/*@Bean
-	@ConditionalOnMissingBean(MetricsProvider.class)
-	/** Creates a metrics provider bean.
-	 * @param bus the bus
-	 * @return the result
-	 */
-	public MetricsProvider metricsProvider(Bus bus) {
-		return new CodahaleMetricsProvider(bus);
-	}
-
-	@Bean
-	public MetricsFeature metricsFeature(MetricsProvider metricsProvider) {
-		return new MetricsFeature(metricsProvider);
-	}*/
+	// Metrics beans commented out - requires cxf-rt-features-metrics
+	// @Bean
+	// @ConditionalOnMissingBean(MetricsProvider.class)
+	// public MetricsProvider metricsProvider(Bus bus) {
+	//     return new CodahaleMetricsProvider(bus);
+	// }
+	//
+	// @Bean
+	// public MetricsFeature metricsFeature(MetricsProvider metricsProvider) {
+	//     return new MetricsFeature(metricsProvider);
+	// }
 	
 	/**
 	 * Create the default {@link EndpointCallback} that attaches the logging and
