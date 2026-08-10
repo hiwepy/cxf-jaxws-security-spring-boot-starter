@@ -36,7 +36,7 @@ import org.springframework.web.util.UrlPathHelper;
 
 /**
  * TODO
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class EndpointApiTemplate {
 
@@ -55,7 +55,7 @@ public class EndpointApiTemplate {
 
 	/**
 	 * 为指定的addr发布Endpoint
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param addr  	   	：服务地址
 	 * @param implementor  	：服务实现
 	 * @return The Endpoint
@@ -66,7 +66,7 @@ public class EndpointApiTemplate {
 
 	/**
 	 * 为指定的addr发布Endpoint
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param addr  	   	：服务地址
 	 * @param implementor  	：服务实现
 	 * @param callback  	：回调函数
@@ -88,7 +88,7 @@ public class EndpointApiTemplate {
 	
 	/**
 	 * 暂停服务
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param pattern ：服务地址或表达式
 	 * @param cause   ：暂停原因
 	 * @return The Endpoint paused
@@ -117,7 +117,7 @@ public class EndpointApiTemplate {
 	
 	/**
 	 * 恢复服务
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param pattern ：服务地址或表达式
 	 * @return The Endpoint restored
 	 */
@@ -145,7 +145,7 @@ public class EndpointApiTemplate {
 
 	/**
 	 * 销毁指定路径匹配的Endpoint
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param pattern ：服务地址或表达式
 	 */
 	public void destroy(String pattern) {
