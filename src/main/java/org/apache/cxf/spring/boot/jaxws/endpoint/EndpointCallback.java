@@ -20,13 +20,13 @@ import javax.xml.ws.Endpoint;
 import org.apache.cxf.jaxws.EndpointImpl;
 
 /**
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public interface EndpointCallback {
 
 	/**
 	 * Endpoint 初始化 后的回调
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param implementor  	：服务实现
 	 * @param endpoint 	   	：{@link Endpoint} instance
 	 * @return The Endpoint
