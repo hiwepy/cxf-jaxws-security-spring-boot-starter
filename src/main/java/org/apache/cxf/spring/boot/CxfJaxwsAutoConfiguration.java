@@ -45,7 +45,7 @@ import org.springframework.util.ObjectUtils;
  * annotated with {@link WebService} and publishes those carrying a
  * {@link WebEndpoint} annotation.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @AutoConfigureAfter(name = { "org.apache.cxf.spring.boot.autoconfigure.CxfAutoConfiguration" })

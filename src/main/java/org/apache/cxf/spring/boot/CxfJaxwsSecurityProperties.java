@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /** Configuration properties for Cxf Jaxws.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 
@@ -15,7 +15,7 @@ public class CxfJaxwsSecurityProperties {
 	public static final String PREFIX = "cxf.jaxws.saml";
 	/** The Cxf Jaxws Saml E H Cache Property.
 	 *
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @since 1.0.0
 	 */
 

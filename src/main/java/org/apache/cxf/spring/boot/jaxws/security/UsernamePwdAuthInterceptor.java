@@ -14,7 +14,7 @@ import jakarta.xml.soap.SOAPHeader;
 import jakarta.xml.soap.SOAPMessage;  
 /** Interceptor for Username Pwd Auth.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
   

@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * {@code enabled} flag, the default SOAP service namespace and the nested logging
  * feature settings exposed through {@link LoggingFeatureProperty}.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(CxfJaxwsProperties.PREFIX)

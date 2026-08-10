@@ -20,13 +20,13 @@ import jakarta.xml.ws.Endpoint;
 import org.apache.cxf.jaxws.EndpointImpl;
 
 /**
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public interface EndpointCallback {
 
 	/**
 	 * Endpoint
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param implementor ：serviceimplementation
 	 * @param endpoint ：{@link Endpoint} instance
 	 * @return The Endpoint

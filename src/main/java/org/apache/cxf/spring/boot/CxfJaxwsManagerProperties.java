@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * are registered with the platform MBean server, whether a connector is created and
  * the JMX service URL exposed by the instrumentation manager.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(CxfJaxwsManagerProperties.PREFIX)

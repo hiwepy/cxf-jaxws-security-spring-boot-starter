@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
  * interceptors, the username/password authentication interceptor and a
  * {@link WSPolicyFeature} that can be attached to published endpoints.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @AutoConfigureAfter(name = { "org.apache.cxf.spring.boot.autoconfigure.CxfAutoConfiguration" })

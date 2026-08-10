@@ -36,7 +36,7 @@ import org.springframework.web.util.UrlPathHelper;
 
 /**
  * TODO
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  */
 public class EndpointApiTemplate {
 
@@ -55,7 +55,7 @@ public class EndpointApiTemplate {
 
 	/**
 	 * addrEndpoint
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param addr ：service
 	 * @param implementor ：serviceimplementation
 	 * @return The Endpoint
@@ -66,7 +66,7 @@ public class EndpointApiTemplate {
 
 	/**
 	 * addrEndpoint
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param addr ：service
 	 * @param implementor ：serviceimplementation
 	 * @param callback ：
@@ -88,7 +88,7 @@ public class EndpointApiTemplate {
 	
 	/**
 	 * service
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param pattern ：serviceor
 	 * @param cause ：
 	 * @return The Endpoint paused
@@ -117,7 +117,7 @@ public class EndpointApiTemplate {
 	
 	/**
 	 * service
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param pattern ：serviceor
 	 * @return The Endpoint restored
 	 */
@@ -145,7 +145,7 @@ public class EndpointApiTemplate {
 
 	/**
 	 * Endpoint
-	 * @author [@Loong Wan](https://github.com/loong10k)
+	 * @author <a href="https://github.com/loong10k">Loong Wan</a>
 	 * @param pattern ：serviceor
 	 */
 	public void destroy(String pattern) {
