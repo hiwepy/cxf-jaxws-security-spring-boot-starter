@@ -33,6 +33,11 @@ import org.springframework.context.annotation.Import;
 @Documented
 @Inherited
 @Import({ CxfJaxwsSecurityConfiguration.class })
+/**
+ * <p>Auto-configuration for EnableCxfJaxwsSecurity.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public @interface EnableCxfJaxwsSecurity {
 	
 }

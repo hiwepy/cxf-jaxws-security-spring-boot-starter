@@ -32,6 +32,10 @@ public class UsernamePwdAuthInterceptor extends AbstractPhaseInterceptor<SoapMes
     }  
   
     @Override  
+    /**
+     * <p>Handle message.</p>
+     * @param message
+     */
     public void handleMessage(SoapMessage message) throws Fault {  
         SOAPMessage mess = message.getContent(SOAPMessage.class);  
         if (mess == null) {  

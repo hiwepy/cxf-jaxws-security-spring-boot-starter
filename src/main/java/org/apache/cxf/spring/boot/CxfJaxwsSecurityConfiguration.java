@@ -37,6 +37,11 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass({ SpringBus.class, CXFServlet.class })
 @ConditionalOnProperty(prefix = CxfJaxwsSecurityProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ CxfJaxwsSecurityProperties.class })
+/**
+ * <p>Auto-configuration for CxfJaxwsSecurityConfiguration.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CxfJaxwsSecurityConfiguration implements ApplicationContextAware {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsSecurityConfiguration.class);
@@ -97,6 +102,10 @@ public class CxfJaxwsSecurityConfiguration implements ApplicationContextAware {
 	 * @return a new WS-Policy feature
 	 */
 	@Bean
+	/**
+	 * <p>Policy feature.</p>
+	 * @return the result
+	 */
 	public WSPolicyFeature policyFeature() {
 
 		WSPolicyFeature feature = new WSPolicyFeature();
@@ -110,6 +119,7 @@ public class CxfJaxwsSecurityConfiguration implements ApplicationContextAware {
 	 * @throws BeansException never thrown
 	 */
 	@Override
+	/** @param applicationContext set the application context. */
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}

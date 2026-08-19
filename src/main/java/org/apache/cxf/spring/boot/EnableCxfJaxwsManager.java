@@ -33,6 +33,11 @@ import org.springframework.context.annotation.Import;
 @Documented
 @Inherited
 @Import({ CxfJaxwsManagerConfiguration.class })
+/**
+ * <p>Auto-configuration for EnableCxfJaxwsManager.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public @interface EnableCxfJaxwsManager {
 
 }

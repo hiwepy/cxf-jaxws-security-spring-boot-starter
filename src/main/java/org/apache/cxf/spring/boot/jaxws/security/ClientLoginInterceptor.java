@@ -29,6 +29,10 @@ public class ClientLoginInterceptor  extends AbstractPhaseInterceptor<SoapMessag
     }  
   
     @Override  
+    /**
+     * <p>Handle message.</p>
+     * @param soap
+     */
     public void handleMessage(SoapMessage soap) throws Fault {  
         List<Header> headers = soap.getHeaders();  
         Document doc = DOMUtils.createDocument();  

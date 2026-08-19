@@ -51,6 +51,10 @@ public class MediatorInInterceptor extends AbstractPhaseInterceptor<SoapMessage>
 		addBefore(StaxInInterceptor.class.getName());
 	}
 
+	/**
+	 * <p>Handle message.</p>
+	 * @param message
+	 */
 	public void handleMessage(SoapMessage message) {
 		String schemaNamespace = "";
 		InterceptorChain chain = message.getInterceptorChain();

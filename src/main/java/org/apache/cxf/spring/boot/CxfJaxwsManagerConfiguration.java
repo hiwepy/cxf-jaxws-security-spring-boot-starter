@@ -32,6 +32,11 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass({ InstrumentationManager.class })
 @ConditionalOnProperty(prefix = CxfJaxwsManagerProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ CxfJaxwsManagerProperties.class })
+/**
+ * <p>Auto-configuration for CxfJaxwsManagerConfiguration.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CxfJaxwsManagerConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsManagerConfiguration.class);
@@ -45,6 +50,12 @@ public class CxfJaxwsManagerConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(InstrumentationManagerImpl.class)
+	/**
+	 * <p>Instrumentation manager.</p>
+	 * @param bus
+	 * @param properties
+	 * @return the result
+	 */
 	public InstrumentationManager instrumentationManager(Bus bus, CxfJaxwsManagerProperties properties) {
 		InstrumentationManagerImpl mgr = new InstrumentationManagerImpl();
 		mgr.setBus(bus);
@@ -60,6 +71,11 @@ public class CxfJaxwsManagerConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(CounterRepository.class)
+	/**
+	 * <p>Counter repository.</p>
+	 * @param bus
+	 * @return the result
+	 */
 	public CounterRepository counterRepository(Bus bus){
 		CounterRepository repository = new CounterRepository();
 		repository.setBus(bus);

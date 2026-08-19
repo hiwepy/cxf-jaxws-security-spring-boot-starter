@@ -42,6 +42,12 @@ public class DefaultEndpointCallback implements EndpointCallback {
 	}
 
 	@Override
+	/**
+	 * <p>Do callback.</p>
+	 * @param implementor
+	 * @param endpoint
+	 * @return the result
+	 */
 	public Endpoint doCallback(Object implementor, EndpointImpl endpoint) {
 
 		endpoint.getInInterceptors().add(new LoggingInInterceptor());

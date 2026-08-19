@@ -36,6 +36,10 @@ public class EndpointPauseInterceptor extends AbstractSoapInterceptor {
 	}
 
 	@Override
+	/**
+	 * <p>Handle message.</p>
+	 * @param message
+	 */
 	public void handleMessage(SoapMessage message) throws Fault {
 		throw new RuntimeException("Service Suspending : " + cause);  
 	}

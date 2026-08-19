@@ -54,6 +54,11 @@ import org.springframework.util.ObjectUtils;
 @ConditionalOnClass({ SpringBus.class, CXFServlet.class })
 @ConditionalOnProperty(prefix = CxfJaxwsProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ CxfJaxwsProperties.class })
+/**
+ * <p>Auto-configuration for CxfJaxwsAutoConfiguration.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CxfJaxwsAutoConfiguration.class);
@@ -65,6 +70,10 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	 */
 	@Bean(name = Bus.DEFAULT_BUS_ID)
 	@ConditionalOnMissingBean(Bus.class)
+	/**
+	 * <p>Bus.</p>
+	 * @return the result
+	 */
 	public SpringBus bus() {
 		SpringBus bus = new SpringBus();
 		BusFactory.setDefaultBus(bus);
@@ -78,6 +87,10 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(BeanValidationProvider.class)
+	/**
+	 * <p>Validation provider.</p>
+	 * @return the result
+	 */
 	public BeanValidationProvider validationProvider() {
 		return new BeanValidationProvider();
 	}
@@ -88,6 +101,11 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	 * @return a new bean validation feature
 	 */
 	@Bean
+	/**
+	 * <p>Validation feature.</p>
+	 * @param validationProvider
+	 * @return the result
+	 */
 	public BeanValidationFeature validationFeature(BeanValidationProvider validationProvider) {
 		BeanValidationFeature feature = new BeanValidationFeature();
 		feature.setProvider(validationProvider);
@@ -100,6 +118,11 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	 * @return a configured logging feature
 	 */
 	@Bean
+	/**
+	 * <p>Logging feature.</p>
+	 * @param properties
+	 * @return the result
+	 */
 	public LoggingFeature loggingFeature(CxfJaxwsProperties properties) {
 		
 		LoggingFeatureProperty property = properties.getLoggingFeature();
@@ -189,6 +212,7 @@ public class CxfJaxwsAutoConfiguration implements ApplicationContextAware {
 	 * @throws BeansException never thrown
 	 */
 	@Override
+	/** @param applicationContext set the application context. */
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}

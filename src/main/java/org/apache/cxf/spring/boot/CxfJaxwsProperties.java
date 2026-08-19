@@ -15,6 +15,11 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @since 1.0.0
  */
 @ConfigurationProperties(CxfJaxwsProperties.PREFIX)
+/**
+ * <p>Auto-configuration for CxfJaxwsProperties.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CxfJaxwsProperties {
 
 	/** Configuration property prefix shared by all JAX-WS properties. */

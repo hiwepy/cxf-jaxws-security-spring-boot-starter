@@ -6,6 +6,11 @@ package org.apache.cxf.spring.boot.jaxws.exception;
  */
 
 @SuppressWarnings("serial")
+/**
+ * <p>Auto-configuration for APIBuildException.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class APIBuildException extends RuntimeException {
 
     public APIBuildException() {

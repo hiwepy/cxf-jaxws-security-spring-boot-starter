@@ -43,6 +43,10 @@ public class ClientTokenInInterceptor extends AbstractPhaseInterceptor<SoapMessa
 	}
 
 	@Override
+	/**
+	 * <p>Handle message.</p>
+	 * @param message
+	 */
 	public void handleMessage(SoapMessage message) {
 
 		Message request = message.getExchange().getInMessage();

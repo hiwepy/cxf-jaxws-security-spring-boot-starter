@@ -103,6 +103,11 @@ public class EndpointApiTemplate {
 					endpoint.getFeatures().removeIf(new Predicate<Feature>() {
 
 						@Override
+						/**
+						 * <p>Test.</p>
+						 * @param t
+						 * @return the result
+						 */
 						public boolean test(Feature t) {
 							return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
 						}
@@ -131,6 +136,11 @@ public class EndpointApiTemplate {
 					endpoint.getFeatures().removeIf(new Predicate<Feature>() {
 
 						@Override
+						/**
+						 * <p>Test.</p>
+						 * @param t
+						 * @return the result
+						 */
 						public boolean test(Feature t) {
 							return EndpointPauseFeature.class.isAssignableFrom(t.getClass());
 						}

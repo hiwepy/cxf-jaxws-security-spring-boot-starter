@@ -13,6 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.0.0
  */
 @ConfigurationProperties(CxfJaxwsManagerProperties.PREFIX)
+/**
+ * <p>Auto-configuration for CxfJaxwsManagerProperties.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CxfJaxwsManagerProperties {
 
 	/** Configuration property prefix shared by all JMX management properties. */

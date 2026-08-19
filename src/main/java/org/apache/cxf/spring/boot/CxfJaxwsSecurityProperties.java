@@ -10,6 +10,11 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  */
 
 @ConfigurationProperties(CxfJaxwsSecurityProperties.PREFIX)
+/**
+ * <p>Auto-configuration for CxfJaxwsSecurityProperties.</p>
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
+ */
 public class CxfJaxwsSecurityProperties {
 
 	public static final String PREFIX = "cxf.jaxws.saml";
