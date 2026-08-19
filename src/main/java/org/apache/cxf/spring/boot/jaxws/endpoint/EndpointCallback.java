@@ -21,6 +21,7 @@ import org.apache.cxf.jaxws.EndpointImpl;
 
 /**
  * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public interface EndpointCallback {
 
